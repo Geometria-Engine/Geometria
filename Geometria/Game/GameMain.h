@@ -1,7 +1,6 @@
 #pragma once
 
 #include "geometria.h"
-#include "RFPLevelScene.h"
 
 struct GameMain
 {
