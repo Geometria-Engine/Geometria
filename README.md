@@ -1,7 +1,7 @@
-# The RetroFunk Project
+# Geometria Engine
 
-![Stars](https://img.shields.io/github/stars/TheNachoBIT/TheRetroFunkProject)
-![Issues](https://img.shields.io/github/issues/TheNachoBIT/TheRetroFunkProject)
+![Stars](https://img.shields.io/github/stars/Geometria-Engine/Geometria)
+![Issues](https://img.shields.io/github/issues/Geometria-Engine/Geometria)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Installation
