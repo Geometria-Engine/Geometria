@@ -1,0 +1,5 @@
+$_compiler $SolutionPath /t:$ProjectName /p:Configuration="Release" /p:Platform="x64" /p:OutDir=$_resultDir
+$_compiler=D:/Visual Studio/2019/MSBuild/Current/Bin/msbuild.exe
+$SolutionPath="$_mainDir/Geometria.sln"
+$ProjectName=Geometria
+$_resultDir="$_mainDir/Result/"

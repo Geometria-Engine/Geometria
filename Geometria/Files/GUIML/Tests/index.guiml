@@ -1,0 +1,6 @@
+<guiml type="Window" name="Begin" class="Window">
+	<div class="smallWindow">
+		<div class="VeryGood" />
+	</div>
+	<p class="blackText">graphic design is my passion</p>
+</guiml>

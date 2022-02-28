@@ -1,0 +1,70 @@
+@font-face
+{
+	font-family: "Raleway";
+	src: "Editor/EditorResources/Fonts/Raleway-Regular.ttf";
+}
+
+@font-face
+{
+	font-family: "Raleway Bold";
+	src: "Editor/EditorResources/Fonts/Raleway-ExtraBold.ttf";
+}
+
+.Window 
+{
+	font-family: "Raleway";
+	width: 90vw;
+	height: 90vh;
+	padding-x: 0px;
+	padding-y:  0px;
+	border-width: 0px;
+	align: center;
+	enable-title: false;
+	enable-resize: false;
+}
+
+.yellowText
+{
+	font-family: "Raleway";
+	font-size: 50px;
+	color: rgb(0, 1, 1);
+}
+
+.greenText
+{
+	color: rgb(0, 1, 0.2);
+	font-family: "Raleway Bold";
+	font-size: 50px;
+}
+
+.blackText
+{
+	color: rgb(0, 0, 0);
+	font-family: "Raleway Bold";
+	font-size: 50px;
+	wrapping: true;
+	align: center;
+}
+
+.smallWindow
+{
+	width: 700px;
+	height: 300px;
+	border-width: 0px;
+	position: absolute;
+	align: center;
+	enable-title: false;
+}
+
+.VeryGood
+{
+	background-image: "Resources/heavyTF2InBg.png";
+	width: 300px;
+	height: 360px;
+	position: absolute;
+	align: center;
+	enable-title: false;
+	enable-resize: false;
+	background-color: linear-gradient(rgba(255,0,250,1) 0%, rgba(255,0,168,1) 44%, rgba(255,0,0,0.3144608185070903) 100%);
+	border-width: 0px;
+}
