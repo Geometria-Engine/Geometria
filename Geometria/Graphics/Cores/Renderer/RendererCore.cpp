@@ -220,8 +220,6 @@ void SortVerticesMultithreading()
 void RendererCore::Start()
 {
 	OpenGL_Start();
-
-	SetUpWorldMatrix();
 }
 
 //glGenVertexArrays(1, &VAO);
@@ -264,6 +262,9 @@ void RendererCore::OpenGL_Start_DrawCall(DrawCall& d)
 {
 	if (d.allIndices.size() == 0)
 	{
+		//std::cout << "Starting Draw Call " << d.id << std::endl;
+		SetUpWorldMatrix(d);
+
 		d.mainShader = new Shader(Files::Read("EngineResources/basic.vert"), Files::Read("EngineResources/basic.frag"));
 
 		uint32_t indSize = 600000;
@@ -442,19 +443,12 @@ DrawCall* RendererCore::FindDrawCall(int sceneId, int id)
 	return nullptr;
 }
 
-void RendererCore::SetUpWorldMatrix()
+void RendererCore::SetUpWorldMatrix(DrawCall& d)
 {
-	for (int scene = 0; scene < SceneManager::_allScenes.size(); scene++)
-	{
-		for (int draw = 0; draw < SceneManager::_allScenes[scene]._drawCalls.size(); draw++)
-		{
-			DrawCall& d = *SceneManager::_allScenes[scene]._drawCalls[draw];
-			d.worldMatrix = Matrix(1.0f);
-			d.worldMatrix = Matrix::Translate(d.worldMatrix, Vector3(0));
-			d.worldMatrix = Matrix::Rotate(d.worldMatrix, Vector3(0));
-			d.worldMatrix = Matrix::Scale(d.worldMatrix, Vector3(1));
-		}
-	}
+	d.worldMatrix = Matrix(1.0f);
+	d.worldMatrix = Matrix::Translate(d.worldMatrix, Vector3(0));
+	d.worldMatrix = Matrix::Rotate(d.worldMatrix, Vector3(0));
+	d.worldMatrix = Matrix::Scale(d.worldMatrix, Vector3(1));
 }
 
 bool preRender = true;
@@ -838,6 +832,8 @@ void RendererCore::OpenGL_Render()
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//std::cout << "Clearing Screen" << std::endl;
 
 		for (int scene = 0; scene < SceneManager::_allScenes.size(); scene++)
 		{

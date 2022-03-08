@@ -3,6 +3,7 @@ workspace "Geometria"
 	configurations { "Release" }
 	platforms { "x86_64", "x86" }
 	startproject "Geometria"
+	warnings "off"
 
 IncludeDirectories = {}
 
@@ -34,6 +35,7 @@ project "Geometria"
 	files 
 	{ 
 		"%{prj.name}/**.h", 
+		"%{prj.name}/**.c",
 		"%{prj.name}/**.hpp", 
 		"%{prj.name}/**.cpp"
 	}

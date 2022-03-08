@@ -36,6 +36,7 @@ public:
 	static void SetCursor();
 	static void GetFrameBuffer();
 	static void SetResizeCall();
+	static bool VSync;
 	//==[GRAPHIC LIBRARY CALLBACKS]==/
 
 	//=================================[ GPU ]=================================//

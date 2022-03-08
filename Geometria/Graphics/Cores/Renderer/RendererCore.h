@@ -43,7 +43,7 @@ public:
 	static void SetUp();
 
 	static void Start();
-	static void SetUpWorldMatrix();
+	static void SetUpWorldMatrix(DrawCall& d);
 	static void Render();
 
 	static void SetVAttr_Universal(DrawCall& d);

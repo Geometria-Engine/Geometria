@@ -1,9 +1,16 @@
 #include <iostream>
 #include "Graphics.h"
+#include <chrono>
+#include <thread>
+
+#ifdef _WIN32
+#include <windows.h>
+#undef CreateWindow
+#endif
 
 //==[STATIC VARIABLES]==//
 
-bool Graphics::_init, Graphics::_close, Graphics::_bypassIntel;
+bool Graphics::_init, Graphics::_close, Graphics::_bypassIntel, Graphics::VSync = true;
 Window Graphics::_currentWindow;
 int Window::width;
 int Window::height;
@@ -43,11 +50,23 @@ void Graphics::Update()
 		//Start rendering here
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glfwSwapBuffers(_currentWindow.openGLWindow);
+
 	//And end it with basic OpenGL stuff, you poll events and swap buffers in order to get the update function going.
 	glfwPollEvents();
 
-	glfwSwapBuffers(_currentWindow.openGLWindow);
-
+//	if (VSync && Application::IsPlatform(Application::Platform::Windows))
+//	{
+//#ifdef _WIN32
+//		DEVMODE lpDevMode;
+//		EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode);
+//		//std::cout << lpDevMode.dmDisplayFrequency << std::endl;
+//		unsigned int microseconds = (1.0f / lpDevMode.dmDisplayFrequency) * 100000;
+//		auto wait_duration = std::chrono::microseconds(microseconds);
+//		std::this_thread::sleep_for(wait_duration);
+//#endif
+//	}
+	
 	glfwSwapInterval(1);
 }
 
