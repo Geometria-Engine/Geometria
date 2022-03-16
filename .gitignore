@@ -256,6 +256,7 @@ paket-files/
 
 # Executables
 *.exe
+!premake5-windows.exe
 
 # RenderDoc Captures
 *.rdc
