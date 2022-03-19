@@ -6,6 +6,11 @@
 #include <sstream>
 #include <vector>
 
+#ifdef _WIN32
+#include <windows.h>
+#undef CreateDirectory
+#endif
+
 extern "C"
 {
 	#include "Files/ZIP/unzip.h"
@@ -24,6 +29,8 @@ struct Files
 	static std::vector<std::string> OpenTexturePack(const char* gtxp);
 
 	static void OpenProgram(const wchar_t* url);
+	static void OpenProgram(const char* url);
+
 	static bool Remove(const char* url);
 	static std::vector<unsigned char> GetImageData(const char* url, int& width, int& height);
 	static bool SaveImage(std::string output, std::vector<unsigned char> data, int width, int height);
@@ -34,5 +41,18 @@ struct Files
 	static void CreateDirectory(const char* url);
 	static bool DirectoryExists(const char* url);
 	static std::string GetDirectoryOf(const char* file);
+
+	static std::string WhereIs(std::string name);
+
+	static std::string RunCommand(std::string cmd);
+	static std::string GetPathFromCommand(std::string cmd);
+	static std::string GetValueFromCommand(std::string cmd);
+	static void ClearConsole();
+
+	static void ChangeCurrentDirectory(std::string path);
+
+	static std::string ConvertToWindowsCmdPath(std::string path);
+
+	static std::string GetExecutablePath();
 };
 #endif

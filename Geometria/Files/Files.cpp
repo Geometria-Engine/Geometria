@@ -3,9 +3,21 @@
 #include "Scene/SceneFile.h"
 #include "nlohmann/json.hpp"
 #include <experimental/filesystem>
+#include <cstdio>
+#include <memory>
+#include "String/StringAPI.h"
 
 #ifdef _WIN32
 #include <Windows.h>
+#include <direct.h>
+#define POPEN _popen
+#define PCLOSE _pclose
+#endif
+#include <Application\Application.h>
+
+#ifdef __linux__
+#define POPEN popen
+#define PCLOSE pclose
 #endif
 
 #undef CreateDirectory
@@ -94,6 +106,12 @@ std::string Files::OpenImage(const char* url, int& width, int& height)
     height = h;
 
     return std::string(image.begin(), image.end());
+}
+
+void Files::OpenProgram(const char* url)
+{
+    std::string getUrl = url;
+    Files::OpenProgram(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(getUrl).c_str());
 }
 
 void Files::OpenProgram(const wchar_t* url)
@@ -299,6 +317,131 @@ std::string Files::GetDirectoryOf(const char* file)
     return(fileToString.substr(0, found));
 }
 
+std::string Files::WhereIs(std::string name)
+{
+    std::string result;
+    std::string command;
+
+#ifdef _WIN32
+    command = "where " + name;
+#endif
+
+#ifdef __linux__
+    command = "which " + name;
+#endif
+
+    result = Files::RunCommand(command);
+    result = StringAPI::RemoveAll(result, "\n");
+
+    std::ifstream test(result);
+    if (!test)
+    {
+        std::cout << "The file \"" << command << "\" doesn't exist" << std::endl;
+        return std::string();
+    }
+
+    return result;
+}
+
+std::string Files::RunCommand(std::string cmd)
+{
+    std::string result;
+    char buffer[128];
+    FILE* pipe = POPEN(cmd.c_str(), "r");
+    if (!pipe) return std::string();
+    try {
+        while (fgets(buffer, sizeof buffer, pipe) != NULL) {
+            result += buffer;
+        }
+    }
+    catch (...) {
+        PCLOSE(pipe);
+    }
+    PCLOSE(pipe);
+
+    return result;
+}
+
+std::string Files::GetPathFromCommand(std::string cmd)
+{
+    std::string result;
+    result = Files::RunCommand(cmd);
+    result = StringAPI::RemoveAll(result, "\n");
+
+    std::ifstream test(result);
+    if (!test)
+    {
+        std::cout << "The path from \"" << cmd << "\" doesn't exist" << std::endl;
+        return std::string();
+    }
+
+    return result;
+}
+
+std::string Files::GetValueFromCommand(std::string cmd)
+{
+    std::string result;
+    result = Files::RunCommand(cmd);
+    result = StringAPI::RemoveAll(result, "\n");
+    return result;
+}
+
+void Files::ClearConsole()
+{
+    if (Application::IsPlatform(Application::Windows))
+        system("cls");
+    else if (Application::IsPlatform(Application::Linux))
+        system("clear");
+}
+
+std::string Files::ConvertToWindowsCmdPath(std::string path)
+{
+    std::string l, finalResult;
+    path = StringAPI::ReplaceAll(path, "\\", "/");
+    std::istringstream cStream(path);
+    bool isFirst = true;
+    while (std::getline(cStream, l, '/'))
+    {
+        std::string changedLine;
+        if (l.find(" ") != std::string::npos)
+        {
+            if (!isFirst)
+                changedLine += "/";
+
+            changedLine += "\"";
+            changedLine += l;
+            changedLine += "\"";
+        }
+        else
+        {
+            if (!isFirst)
+                changedLine += "/";
+
+            changedLine += l;
+        }
+
+        isFirst = false;
+        finalResult += changedLine;
+    }
+
+    return finalResult;
+}
+
+std::string Files::GetExecutablePath()
+{
+    std::string path;
+
+    // TODO: Add Support For Linux
+
+#ifdef _WIN32
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    path = std::string(buffer);
+#endif
+
+    return path;
+}
+
 std::vector<std::string> Files::OpenTexturePack(const char* gtxp)
 {
     std::string txpContent = Files::Read(gtxp, true);
@@ -333,4 +476,33 @@ std::vector<std::string> Files::OpenTexturePack(const char* gtxp)
     }
 
     return texturePackLinks;
+}
+
+void Files::ChangeCurrentDirectory(std::string path)
+{
+    std::string finalDirectory;
+
+    std::string pathWithFileSystem = std::experimental::filesystem::current_path().u8string() + "\\" + path;
+
+    if(Files::DirectoryExists(pathWithFileSystem.c_str()) ||
+        Files::DirectoryExists(path.c_str()))
+    {
+        if(Application::IsPlatform(Application::Windows))
+        {
+            if(path.find(":/") == std::string::npos || path.find(":\\") == std::string::npos)
+            {
+                finalDirectory = std::experimental::filesystem::current_path().u8string() + "\\";
+            }
+    
+            finalDirectory += path;
+    
+            #ifdef _WIN32
+            _chdir(finalDirectory.c_str());
+            #endif
+        }
+        else if(Application::IsPlatform(Application::Linux))
+        {
+            // TODO: Make it for Linux.
+        }
+    }
 }
