@@ -1,4 +1,7 @@
+#ifndef RENDERER_CORE_H
+#define RENDERER_CORE_H
 #include <vector>
+
 
 class Model;
 struct Vertex;
@@ -10,8 +13,6 @@ class DrawCall;
 
 class ImGUIElement;
 
-#ifndef RENDERER_CORE_H
-#define RENDERER_CORE_H
 class RendererCore
 {
 public:

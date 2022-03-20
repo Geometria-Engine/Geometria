@@ -1,6 +1,10 @@
+#ifndef COMPILER_H
+#define COMPILER_H
+
 #include <string>
 #include <experimental/filesystem>
 #include <vector>
+
 struct CompilerValue
 {
 	std::string name, value;
@@ -33,3 +37,5 @@ public:
 
 	std::string ModifyCommandLine(std::string c);
 };
+
+#endif
