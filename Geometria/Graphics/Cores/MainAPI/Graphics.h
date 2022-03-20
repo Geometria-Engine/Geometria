@@ -9,6 +9,12 @@
 #include "../Shader/Shader.h"
 #include "../Camera/Camera.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#undef CreateWindow
+#endif
+
+
 class RendererCore;
 class Camera;
 

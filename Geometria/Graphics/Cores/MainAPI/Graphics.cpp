@@ -3,11 +3,6 @@
 #include <chrono>
 #include <thread>
 
-#ifdef _WIN32
-#include <windows.h>
-#undef CreateWindow
-#endif
-
 //==[STATIC VARIABLES]==//
 
 bool Graphics::_init, Graphics::_close, Graphics::_bypassIntel, Graphics::VSync = true;

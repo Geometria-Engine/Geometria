@@ -1,4 +1,6 @@
 #pragma once
+#ifndef SCENEFILE_H
+#define SCENEFILE_H
 #include <string>
 #include "yaml-cpp/yaml.h"
 
@@ -54,3 +56,4 @@ public:
 
 	static void EndSaveArray();
 };
+#endif

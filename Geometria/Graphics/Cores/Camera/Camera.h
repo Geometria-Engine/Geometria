@@ -3,8 +3,10 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "../MainAPI/Graphics.h"
-#include "../../../Behaviours/Behaviour.h"
+#include "geometria.h"
+
+#undef near
+#undef far
 
 class Camera : public ScriptBehaviour
 {
