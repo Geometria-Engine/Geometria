@@ -1,4 +1,7 @@
 #pragma once
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
+
 #include <GL/glew.h>
 #include <glfw3.h>
 #include <vector>
@@ -129,3 +132,5 @@ public:
 		return result;
 	}
 };
+
+#endif
