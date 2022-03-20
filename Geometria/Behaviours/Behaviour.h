@@ -1,4 +1,7 @@
 #pragma once
+#ifndef BEHAVIOUR_H
+#define BEHAVIOUR_H
+
 #include <vector>
 #include <iostream>
 #include "../Tools/Tools.h"
@@ -368,3 +371,5 @@ struct ScriptBehaviour
 		return nullptr;
 	}
 };
+
+#endif
