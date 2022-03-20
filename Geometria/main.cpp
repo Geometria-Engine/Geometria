@@ -235,9 +235,6 @@ int main(int argc, char** argv)
                         }
                     }
 
-                    if (Input::GetKeyDown(GLFW_KEY_C))
-                        CompilationCore::Compile();
-
                     if (Input::GetKeyDown(GLFW_KEY_S))
                     {
                         DrawCall* main = SceneManager::MainScene().MainDrawCall();
