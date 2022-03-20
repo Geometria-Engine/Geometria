@@ -535,11 +535,11 @@ void RendererCore::SortVertices()
 				if (d.start < 2)
 				{
 					splitIn = d.allVerts.size();
-					std::cout << "Loading and Sorting... (Phase " << d.start + 1 << ") Split in: " << splitIn << std::endl;
+					//std::cout << "Loading and Sorting... (Phase " << d.start + 1 << ") Split in: " << splitIn << std::endl;
 				}
 				else if (d.start == 2)
 				{
-					std::cout << "Finished!" << std::endl;
+					//std::cout << "Finished!" << std::endl;
 					d.start++;
 				}
 
