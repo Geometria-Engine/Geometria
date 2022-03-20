@@ -1,9 +1,4 @@
 #include "Compiler.h"
-#include "../Files/Files.h"
-#include "../Graphics/Cores/MainAPI/Graphics.h"
-#include <istream>
-#include <iostream>
-#include <string>
 
 bool hasEnding(std::string const& fullString, std::string const& ending) {
 	if (fullString.length() >= ending.length()) {
