@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include "../../Externals/Model.h"
 
+#ifndef SHADER_H
+#define SHADER_H
+
 class Shader
 {
 private:
@@ -69,3 +72,5 @@ private:
 	void Compilation();
 	void FinalTouches();
 };
+
+#endif
