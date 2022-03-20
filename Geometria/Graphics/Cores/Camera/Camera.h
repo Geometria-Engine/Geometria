@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef CAMERA_H
+#define CAMERA_H
+
 #include "../MainAPI/Graphics.h"
 #include "../../../Behaviours/Behaviour.h"
 
@@ -74,3 +77,5 @@ public:
 	void Mouse();
 	void MoveDirection(const int direction);
 };
+
+#endif
