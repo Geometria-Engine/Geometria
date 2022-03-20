@@ -1,3 +1,6 @@
+#ifndef COMPILATION_CORE_H
+#define COMPILATION_CORE_H
+
 #include "Compiler.h"
 class CompilationCore
 {
@@ -25,3 +28,5 @@ public:
 
 	static void Compile();
 };
+
+#endif
