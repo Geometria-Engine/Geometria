@@ -274,6 +274,10 @@ public:
 
 	Texture* backgroundImage = nullptr;
 
+	void SetUpBackgroundImage(ImVec2 topLeft, ImVec2 bottomRight);
+
+	ImGUIElement* FindElementWithName(std::string name);
+
 	bool EnableTitle = true;
 	bool EnableScrolling = true;
 	bool EnableResize = true;
@@ -332,6 +336,7 @@ public:
 
 	void OnClick(std::function<void()> theEvent)
 	{
+		std::cout << "Added On Click" << std::endl;
 		onClickEvents.push_back(theEvent);
 	}
 

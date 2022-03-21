@@ -126,14 +126,16 @@ void ImGUIElement::SetCurrentSizeToScreenSize(bool setX, bool setY)
 
 void ImGUIElement::SetCurrentPosToAlignPivot()
 {
-	if (alignPivot != Vector2(-1, -1))
+	if (alignPivot == Vector2(-1, -1))
 	{
 		ForceAlignToCustom();
 
+		ImVec2 windowPos = ImGui::GetWindowPos();
+
 		if (guiType == Window)
 		{
-			alignPivot = Vector2((ImGui::GetWindowPos().x + (ImGui::GetWindowSize().x / 2.0f)) / Graphics::GetMainWindow().width,
-				(ImGui::GetWindowPos().y + (ImGui::GetWindowSize().y / 2.0f)) / Graphics::GetMainWindow().height);
+			alignPivot = Vector2((windowPos.x + (ImGui::GetWindowSize().x / 2.0f)) / Graphics::GetMainWindow().width,
+				(windowPos.y + (ImGui::GetWindowSize().y / 2.0f)) / Graphics::GetMainWindow().height);
 		}
 	}
 }
@@ -183,6 +185,67 @@ void ImGUIElement::SetMinScale(Vector2 min)
 void ImGUIElement::SetMaxScale(Vector2 max)
 {
 	maxScale = max;
+}
+
+void ImGUIElement::SetUpBackgroundImage(ImVec2 topLeft, ImVec2 bottomRight)
+{
+	if (backgroundImage->IsLoadedToGPU())
+	{
+		ImVec2 winPad = ImGui::GetStyle().WindowPadding;
+
+		ImVec2 uvMin(float(backgroundImage->finalRect.x) / float(TextureManager::textureGroups[backgroundImage->texGroupId].width),
+			float(backgroundImage->finalRect.y) / float(TextureManager::textureGroups[backgroundImage->texGroupId].height));
+
+		ImVec2 uvMax(float(backgroundImage->finalRect.x + backgroundImage->finalRect.width) / float(TextureManager::textureGroups[backgroundImage->texGroupId].width),
+			float(backgroundImage->finalRect.y + backgroundImage->finalRect.height) / float(TextureManager::textureGroups[backgroundImage->texGroupId].height));
+
+		if (colorRef == nullptr)
+		{
+			ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)TextureManager::textureGroups[backgroundImage->texGroupId].texture,
+				topLeft,
+				bottomRight, uvMin, uvMax);
+		}
+		else
+		{
+			ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)TextureManager::textureGroups[backgroundImage->texGroupId].texture,
+				topLeft,
+				bottomRight, uvMin, uvMax, ImColor(colorRef->r, colorRef->g, colorRef->b, colorRef->a));
+		}
+	}
+}
+
+int element_find_count = 0;
+ImGUIElement* ImGUIElement::FindElementWithName(std::string getName)
+{
+	/*std::string spaces;
+	for (int i = 0; i < element_find_count; i++)
+		spaces += " ";*/
+
+	std::string currentName;
+
+	ImGUIElement* ret = nullptr;
+	
+	for (auto i : allElements)
+	{
+		if (ret == nullptr)
+		{
+			currentName = i->Name();
+			if (currentName == getName)
+			{
+				//std::cout << spaces << currentName << " IS EQUALS TO " << getName << ". STOOOOOOOOOOOOOOOOOOOOP\n";
+				ret = i;
+			}
+			else
+			{
+				//std::cout << spaces << currentName << " is not equals " << getName << "\n";
+				element_find_count++;
+				ret = i->FindElementWithName(getName);
+				element_find_count--;
+			}
+		}
+	}
+
+	return ret;
 }
 
 void ImGUIElement::AddBackgroundGradient(std::vector<std::pair<Color, float>> bg)
@@ -524,10 +587,20 @@ void ImGUIElement::OnUpdate()
 		{
 			float font_size_x = 0;
 
+			ImFont* currentFont = nullptr;
+			int currentFontSize = -1;
+
+			if (font != nullptr)
+			{
+				currentFont = font->font;
+				currentFontSize = font->size;
+			}
+
+
 			if(guiType == GUIType::InputField)
-				font_size_x = ImGui::CalcTextSize(text.c_str()).x + ImGui::CalcItemWidth();
+				font_size_x = ImGui::CalcTextSize(text.c_str(), NULL, false, -1.0f, currentFont, currentFontSize).x + ImGui::CalcItemWidth();
 			else
-				font_size_x = ImGui::CalcTextSize(text.c_str()).x;
+				font_size_x = ImGui::CalcTextSize(text.c_str(), NULL, false, -1.0f, currentFont, currentFontSize).x;
 
 			float font_size_y = ImGui::CalcTextSize(text.c_str()).y;
 
@@ -571,7 +644,7 @@ void ImGUIElement::OnUpdate()
 		float winBorderRadius = style.WindowRounding,
 			childWinBorderRadius = style.ChildRounding,
 			frameBorderRadius = style.FrameRounding;
-
+		
 		style.WindowRounding = borderRadius;
 		style.ChildRounding = borderRadius;
 		style.FrameRounding = borderRadius;
@@ -765,29 +838,7 @@ void ImGUIElement::OnUpdate()
 
 					if (backgroundImage != nullptr)
 					{
-						if (backgroundImage->IsLoadedToGPU())
-						{
-							ImVec2 winPad = style.WindowPadding;
-
-							ImVec2 uvMin(float(backgroundImage->finalRect.x) / float(TextureManager::textureGroups[backgroundImage->texGroupId].width),
-								float(backgroundImage->finalRect.y) / float(TextureManager::textureGroups[backgroundImage->texGroupId].height));
-
-							ImVec2 uvMax(float(backgroundImage->finalRect.x + backgroundImage->finalRect.width) / float(TextureManager::textureGroups[backgroundImage->texGroupId].width),
-								float(backgroundImage->finalRect.y + backgroundImage->finalRect.height) / float(TextureManager::textureGroups[backgroundImage->texGroupId].height));
-
-							if (colorRef == nullptr)
-							{
-								ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)TextureManager::textureGroups[backgroundImage->texGroupId].texture,
-									window_TopLeft,
-									window_BottomRight, uvMin, uvMax);
-							}
-							else
-							{
-								ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)TextureManager::textureGroups[backgroundImage->texGroupId].texture,
-									window_TopLeft,
-									window_BottomRight, uvMin, uvMax, ImColor(colorRef->r, colorRef->g, colorRef->b, colorRef->a));
-							}
-						}
+						SetUpBackgroundImage(window_TopLeft, window_BottomRight);
 					}
 
 					for (int i = 0; i < allElements.size(); i++)
@@ -842,6 +893,20 @@ void ImGUIElement::OnUpdate()
 			if(onHoverAnim != nullptr)
 				if (colorRef != nullptr)
 					style.Colors[ImGuiCol_ButtonHovered] = ImColor(colorRef->r, colorRef->g, colorRef->b, colorRef->a);
+
+			if (backgroundImage != nullptr)
+			{
+				style.Colors[ImGuiCol_Button] = ImColor(0, 0, 0, 0);
+				style.Colors[ImGuiCol_ButtonHovered] = ImColor(0, 0, 0, 0);
+
+				ImVec2 topLeft;
+				if (owner != nullptr)
+					topLeft = ImVec2(ImGui::GetWindowPos().x + ImGui::GetCursorPos().x, ImGui::GetWindowPos().y + ImGui::GetCursorPos().y);
+				else
+					topLeft = ImGui::GetCursorPos();
+
+				SetUpBackgroundImage(topLeft, ImVec2(size.x + topLeft.x, size.y + topLeft.y));
+			}
 
 			if (ImGui::ButtonEx(textFinal.c_str(), ImVec2(size.x, size.y), ImGuiButtonFlags_FlattenChildren))
 			{
