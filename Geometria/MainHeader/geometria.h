@@ -15,6 +15,8 @@
 #include "Animation/Animation.h"
 #include "Broadcast/Broadcast.h"
 #include "DebugTools/DebugTools.h"
+#include "String/StringAPI.h"
+#include "Web/Web.h"
 #undef CreateWindow
 #ifndef TRUE
 #define TRUE 1
