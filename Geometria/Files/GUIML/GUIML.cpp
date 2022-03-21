@@ -361,6 +361,7 @@ ImGUIElement* GUIML::ReadGUIMLNode(pugi::xml_node node, ImGUIElement* owner)
 
 			Node = new ImGUIElement(ImGUIElement::GUIType::Text, *owner, p.text().as_string());
 			ApplyCSS(*Node, nodeInfo.nodeClass);
+			Node->objectClassName = nodeInfo.nodeName;
 
 			for (pugi::xml_node subnode : p)
 				ReadGUIMLNode(subnode, Node);
@@ -379,6 +380,11 @@ ImGUIElement* GUIML::ReadGUIMLNode(pugi::xml_node node, ImGUIElement* owner)
 			Node->target = &Node->strData;
 			ApplyCSS(*Node, nodeInfo.nodeClass);
 
+			Node->objectClassName = nodeInfo.nodeName;
+
+			if (nodeInfo.nodeName != "")
+				std::cout << "Applied name " << Node->objectClassName << std::endl;
+
 			std::string b = input.attribute("broadcast").as_string();
 			if (b == "true")
 				Broadcast::AddImGUIElementToBroadcast(Node, nodeInfo.nodeName);
@@ -393,6 +399,7 @@ ImGUIElement* GUIML::ReadGUIMLNode(pugi::xml_node node, ImGUIElement* owner)
 			Node = new ImGUIElement(ImGUIElement::GUIType::Window, *owner, nodeInfo.nodeName);
 			Node->EnableTitle = Node->EnableResize = false;
 			ApplyCSS(*Node, nodeInfo.nodeClass);
+			Node->objectClassName = nodeInfo.nodeName;
 
 			for (pugi::xml_node subnode : div)
 				ReadGUIMLNode(subnode, Node);
@@ -405,12 +412,12 @@ ImGUIElement* GUIML::ReadGUIMLNode(pugi::xml_node node, ImGUIElement* owner)
 			Node->target = &Node->strData;
 			ApplyCSS(*Node, nodeInfo.nodeClass);
 			ApplyBroadcast(*Node, button);
+			Node->objectClassName = nodeInfo.nodeName;
 
 			for (pugi::xml_node subnode : button)
 				ReadGUIMLNode(subnode, Node);
 		}
 	}
-
 	return Node;
 }
 
