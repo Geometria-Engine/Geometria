@@ -68,7 +68,11 @@ void Model::SetVertices(Matrix matrix, std::vector<float> vertsToSet)
 
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		Vector4 set = matrix * Vector4(transform.position.x + modelVertexData[i * 4] * transform.scale.x, transform.position.y + modelVertexData[i * 4 + 1] * transform.scale.y, transform.position.z, 1.0f);
+		Vector4 set = matrix * Vector4(
+			transform.position.x + modelVertexData[i * 4] * transform.scale.x, 
+			transform.position.y + modelVertexData[i * 4 + 1] * transform.scale.y, 
+			transform.position.z + modelVertexData[i * 4 + 2] * transform.scale.z, 
+			1.0f);
 
 		vertices[i].position = glm::vec4(set.x, set.y, set.z, set.w);
 		vertices[i].color = glm::vec4(color.r, color.g, color.b, color.a);
