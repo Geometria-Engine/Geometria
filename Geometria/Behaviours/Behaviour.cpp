@@ -83,7 +83,7 @@ void ScriptBehaviour::StartScript()
 
 	if (ClassType == Class::Object || ClassType == Class::Static || hasOwner)
 	{
-		if (Application::_engineState == Application::State::Game)
+		if (Application::_engineState == Application::State::Game || isUniversal)
 		{
 			if (!_gameStart)
 			{
@@ -106,6 +106,11 @@ void ScriptBehaviour::StartScript()
 		{
 			if (isEditor)
 				Hierarchy::allUpdateEditorScripts.push_back(this);
+			else if (isUniversal)
+			{
+				Hierarchy::allUpdateEditorScripts.push_back(this);
+				Hierarchy::allUpdateScripts.push_back(this);
+			}
 			else
 				Hierarchy::allUpdateScripts.push_back(this);
 		}
@@ -154,7 +159,10 @@ void Hierarchy::UpdateScripts()
 	{
 		for (int i = 0; i < Hierarchy::allUpdateEditorScripts.size(); i++)
 		{
-			Hierarchy::allUpdateEditorScripts[i]->OnEditorUpdate();
+			if(Hierarchy::allUpdateEditorScripts[i]->isUniversal)
+				Hierarchy::allUpdateScripts[i]->OnUpdate();
+			else
+				Hierarchy::allUpdateEditorScripts[i]->OnEditorUpdate();
 		}
 	}
 }
