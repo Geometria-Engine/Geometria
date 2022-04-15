@@ -1,8 +1,8 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#include "../Files/Files.h"
-#include "../Graphics/Cores/MainAPI/Graphics.h"
+//#include "../Files/Files.h"
+//#include "../Graphics/Cores/MainAPI/Graphics.h"
 #include <istream>
 #include <iostream>
 #include <string>

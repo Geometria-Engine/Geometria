@@ -265,7 +265,9 @@ void RendererCore::OpenGL_Start_DrawCall(DrawCall& d)
 		//std::cout << "Starting Draw Call " << d.id << std::endl;
 		SetUpWorldMatrix(d);
 
-		d.mainShader = new Shader(Files::Read("EngineResources/basic.vert"), Files::Read("EngineResources/basic.frag"));
+		d.mainShader = new Shader(
+			MiniShader::RewriteForShaderVersion(Files::Read("EngineResources/basic.vert"), 1.30f, false),
+			MiniShader::RewriteForShaderVersion(Files::Read("EngineResources/basic.frag"), 1.30f, true));
 
 		uint32_t indSize = 600000;
 		d.allIndices.resize(indSize);

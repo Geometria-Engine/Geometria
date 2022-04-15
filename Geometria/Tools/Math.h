@@ -1,5 +1,8 @@
+#ifndef MATH_H
+#define MATH_H
 #include <math.h>
 #include <random>
+#include <limits>
 /*
 I don't know which version of C++ do you use, so I created this definition at the moment
 */
@@ -37,4 +40,16 @@ struct Math
 	{
 		return float(a * 57.295779513082320876798154814105);
 	}
+
+	static float EpsilonFloat()
+	{
+		return std::numeric_limits<float>::epsilon();
+	}
+
+	static float EpsilonDouble()
+	{
+		return std::numeric_limits<double>::epsilon();
+	}
 };
+
+#endif

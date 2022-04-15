@@ -1,3 +1,6 @@
+#ifndef VERTEX_H
+#define VERTEX_H
+
 #include "glm/glm.hpp"
 struct Vertex
 {
@@ -10,3 +13,5 @@ struct Vertex
 	int order = -1;
 	bool isDeleted = false;
 };
+
+#endif

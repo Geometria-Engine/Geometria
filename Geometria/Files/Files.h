@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "Trenchbroom/Trenchbroom.h"
 
 #ifdef _WIN32
 #include <windows.h>

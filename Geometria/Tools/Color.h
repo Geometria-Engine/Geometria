@@ -1,3 +1,6 @@
+#ifndef COLOR_H
+#define COLOR_H
+
 struct Vector2;
 struct Vector3;
 struct Vector4;
@@ -170,3 +173,5 @@ struct Color
 		return hsv;
 	}
 };
+
+#endif

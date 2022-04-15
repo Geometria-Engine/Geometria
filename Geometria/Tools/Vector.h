@@ -1,7 +1,11 @@
+#ifndef VECTOR_H
+#define VECTOR_H
+
 #include "Math.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
 
 class Model;
 struct Color;
@@ -179,6 +183,11 @@ struct Vector3 {
 	template <typename T1, typename T2> Vector3(T1 x, T2 y) : x((float)x), y((float)y), z(0) {}
 	template <typename T1, typename T2, typename T3> Vector3(T1 x, T2 y, T3 z) : x((float)x), y((float)y), z((float)z) {}
 
+	std::string ToString()
+	{
+		return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+	}
+
 	Vector3(const Vector2& A);
 	//Vector3(Vector3& A);
 	Vector3(const Vector4& A);
@@ -327,6 +336,11 @@ struct Vector3 {
 		);
 	}
 
+	float LengthSquared()
+	{
+		return x * x + y * y + z * z;
+	}
+
 	static float Dot(Vector3 one, Vector3 two)
 	{
 		return one.x * two.x + one.y * two.y + one.z * two.z;
@@ -364,6 +378,11 @@ struct Vector4 {
 	template <typename T1, typename T2> Vector4(T1 x, T2 y) : x((float)x), y((float)y), z(0), w(0) {}
 	template <typename T1, typename T2, typename T3> Vector4(T1 x, T2 y, T3 z) : x((float)x), y((float)y), z((float)z), w(0) {}
 	template <typename T1, typename T2, typename T3, typename T4> Vector4(T1 x, T2 y, T3 z, T4 w) : x((float)x), y((float)y), z((float)z), w((float)w) {}
+
+	std::string ToString()
+	{
+		return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +  ", " + std::to_string(w) + ")";
+	}
 
 	Vector4(const Vector2& A);
 	Vector4(const Vector3& A);
@@ -534,3 +553,5 @@ struct Vector4 {
 			one.w * two.z + one.z * two.w + one.x * two.y - one.y * two.x);
 	}
 };
+
+#endif
