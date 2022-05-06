@@ -1,0 +1,4 @@
+vec4 albedo;
+Master_UseFirstTexture(albedo);
+
+Master_Color *= albedo;

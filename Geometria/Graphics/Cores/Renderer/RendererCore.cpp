@@ -581,17 +581,14 @@ void RendererCore::SortVertices()
 						std::cout << d.allVerts[i].modelId << std::endl;
 					}*/
 
-					std::sort(d.allModels.begin(), d.allModels.end(), [&](Model* i, Model* j)
+					std::stable_sort(d.allModels.begin(), d.allModels.end(), [&](Model* i, Model* j)
 						{
-							if (d.mode == DrawCall::Mode::To2D)
+							if (i->vertices.size() <= 4 && j->vertices.size() <= 4)
 							{
-								if (i->sortingLayer == j->sortingLayer)
-									return i->sortingLayer == j->sortingLayer && i->sortingOrder > j->sortingOrder;
-
-								return i->sortingLayer > j->sortingLayer;
+								return i->transform.position.z < j->transform.position.z;
 							}
 
-							return Vector3::Distance(i->transform.position + i->transform.scale, Graphics::MainCamera()->GetCurrentPosition()) > Vector3::Distance(j->transform.position + j->transform.scale, Graphics::MainCamera()->GetCurrentPosition());
+							return Vector3::Distance(i->transform.position, Graphics::MainCamera()->GetCurrentPosition()) > Vector3::Distance(j->transform.position, Graphics::MainCamera()->GetCurrentPosition());
 						});
 
 					int vertexCount = 0;

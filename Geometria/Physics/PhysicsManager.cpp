@@ -137,6 +137,26 @@ bool PhysicsManager::Raycast(Vector3 origin, Vector3 direction, int maxDistance)
 	return PhysicsManager::gScene->raycast(o, d, maxDistance, hit);
 }
 
+bool PhysicsManager::Raycast(Vector3 origin, Vector3 direction, int maxDistance, RaycastBuffer& buff)
+{
+	const physx::PxU32 bufferSize = 256;
+	physx::PxRaycastHit hitBuffer[bufferSize];
+	physx::PxRaycastBuffer hit(hitBuffer, bufferSize);
+
+	physx::PxVec3 o(origin.x, origin.y, origin.z), d(direction.x, direction.y, direction.z);
+	bool ray = PhysicsManager::gScene->raycast(o, d, maxDistance, hit);
+	if(ray)
+	{
+		for (physx::PxU32 i = 0; i < hit.nbTouches; i++)
+		{
+		    buff.hitScripts.push_back(reinterpret_cast<ScriptBehaviour*>(hit.touches[i].actor->userData));
+		}
+		return true;
+	}
+
+	return false;
+}
+
 physx::PxFilterFlags PhysicsManager::contactReportFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
 	physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
 	physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)

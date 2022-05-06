@@ -1,0 +1,1 @@
+Master_Color = vec4(Master_VertPosition.x / 2, Master_VertPosition.y / 2, (Master_VertPosition.x / 4) + (Master_VertPosition.y / 4), 1);

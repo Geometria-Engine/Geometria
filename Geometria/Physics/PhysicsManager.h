@@ -27,6 +27,21 @@ struct PhysicsContactListener : public physx::PxSimulationEventCallback
 	void onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs);
 };
 
+struct RaycastBuffer
+{
+	std::vector<ScriptBehaviour*> hitScripts;
+	bool HittedAnythingExcept(ScriptBehaviour* s)
+	{
+		for(int i = 0; i < hitScripts.size(); i++)
+		{
+			if(hitScripts[i] != s)
+				return true;
+		}
+
+		return false;
+	}
+};
+
 class PhysicsManager : public ScriptBehaviour
 {
 public:
@@ -67,4 +82,5 @@ public:
 	static physx::PxRigidDynamic* CreateDynamicBox(BoxCollider& collider, Vector3 position, Vector3 scale);
 
 	static bool Raycast(Vector3 origin, Vector3 direction, int maxDistance);
+	static bool Raycast(Vector3 origin, Vector3 direction, int maxDistance, RaycastBuffer& buffer);
 };
