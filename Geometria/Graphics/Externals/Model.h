@@ -117,6 +117,8 @@ public:
 	int sortingLayer = 0;
 	int sortingOrder = 0;
 
+	int miniShaderId = 0;
+
 	Texture* texture = nullptr;
 	bool initialized = false;
 

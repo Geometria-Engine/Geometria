@@ -309,6 +309,7 @@ void Model::OnChange(bool modifyTransform, bool reCheck)
 			}
 
 			vertices[i].modelId = scriptId;
+			vertices[i].miniShaderId = miniShaderId;
 			vertices[i].color = glm::vec4(color.r, color.g, color.b, color.a);
 			vertices[i].position = glm::vec4(finalPosition.x, finalPosition.y, finalPosition.z, finalPosition.w);
 

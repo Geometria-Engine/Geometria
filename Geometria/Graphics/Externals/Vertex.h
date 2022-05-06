@@ -8,6 +8,7 @@ struct Vertex
 	glm::vec4 color;
 	glm::vec2 texCoords;
 	float textureGroupId = 0;
+	float miniShaderId = 0;
 	int modelId = 0;
 	int modelVertexId = 0;
 	int order = -1;

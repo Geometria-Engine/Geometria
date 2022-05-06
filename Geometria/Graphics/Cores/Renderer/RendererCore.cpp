@@ -64,6 +64,7 @@ void RendererCore::AddModel(Model& m, DrawCall& d)
 	for (int i = 0; i < m.vertices.size(); i++)
 	{
 		m.vertices[i].color = glm::vec4(m.color.r, m.color.g, m.color.b, m.color.a);
+		m.vertices[i].miniShaderId = m.miniShaderId;
 
 		if (m.texture != nullptr)
 		{
@@ -337,6 +338,11 @@ void RendererCore::SetVAttr_Universal(DrawCall& d)
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
+	// Mini Shader ID
+	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, miniShaderId));
+	glEnableVertexAttribArray(pointerPosition);
+	pointerPosition++;
+
 	// Texture UV Coordinates
 	glVertexAttribPointer(pointerPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
 	glEnableVertexAttribArray(pointerPosition);
@@ -377,6 +383,8 @@ void RendererCore::SetVAttr_AMDWindows(DrawCall& d)
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
+	// TODO: Add Mini Shaders
+
 	glBindVertexArray(0);
 }
 
@@ -394,6 +402,11 @@ void RendererCore::SetVAttr_IntelWindows(DrawCall& d)
 
 	// Texture UV Coordinates
 	glVertexAttribPointer(pointerPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+	glEnableVertexAttribArray(pointerPosition);
+	pointerPosition++;
+
+	// Mini Shader ID
+	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, miniShaderId));
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 

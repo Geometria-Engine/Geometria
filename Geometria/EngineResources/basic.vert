@@ -1,6 +1,8 @@
 in vec3 vertex_position;
 in vec4 vertex_color;
 
+in float miniShaderId;
+
 in vec2 vertex_uv;
 in float textureIndex;
 
@@ -35,6 +37,7 @@ out vec3 vs_position;
 out vec4 vs_color;
 out vec2 FirstTexture;
 flat out float texIndex;
+flat out float vs_miniShaderId;
 
 uniform mat4 MVP;
 
@@ -43,6 +46,11 @@ void main()
 	vs_color = vertex_color;
 	FirstTexture = vec2(vertex_uv.x, vertex_uv.y);
 	texIndex = textureIndex;
+
+	vs_miniShaderId = miniShaderId;
+	int Master_MiniShaderID = int(miniShaderId);
+
+	{ApplyMiniShaders}
 
 	vs_position = vertex_position;
 	gl_Position = MVP * vec4(vs_position, 1.f);

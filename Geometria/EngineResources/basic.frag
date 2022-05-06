@@ -1,8 +1,10 @@
 precision mediump float;
 
+in vec3 vs_position;
 in vec4 vs_color;
 in vec2 FirstTexture;
 flat in float texIndex;
+flat in float vs_miniShaderId;
 
 uniform sampler2D textures0;
 uniform sampler2D textures1;
@@ -84,8 +86,11 @@ void Master_UseFirstTexture(inout vec4 t)
 
 void main()
 {
-    vec4 albedo;
-    Master_UseFirstTexture(albedo);
+    int Master_MiniShaderID = int(vs_miniShaderId);
+    vec3 Master_VertPosition = vs_position;
+    vec4 Master_Color = vs_color;
 
-    fs_color = vs_color * albedo;
+    {ApplyMiniShaders}
+
+    fs_color = Master_Color;
 }
