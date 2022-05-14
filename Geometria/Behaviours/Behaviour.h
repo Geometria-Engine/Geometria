@@ -310,7 +310,7 @@ struct ScriptBehaviour
 	template <typename T>
 	T* AddScript()
 	{
-		std::cout << "Adding New Script..." << std::endl;
+		//std::cout << "Adding New Script..." << std::endl;
 
 		T* script = new T();
 

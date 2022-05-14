@@ -24,6 +24,7 @@ MiniShader::MiniShader(std::string fragmentUrl, std::string vertexUrl)
 
 std::string MiniShader::RewriteForShaderVersion(std::string content, float ver, bool isFragmentShader)
 {
+	std::cout << "Rendering shader with version: " << ver << std::endl;
 	if(ver == 1.20f)
 	{
 		std::cout << "Converting Shader to OpenGL 2.1...\n";

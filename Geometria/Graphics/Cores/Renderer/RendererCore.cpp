@@ -263,7 +263,7 @@ void RendererCore::OpenGL_Start_DrawCall(DrawCall& d)
 {
 	if (d.allIndices.size() == 0)
 	{
-		//std::cout << "Starting Draw Call " << d.id << std::endl;
+		std::cout << "Starting Draw Call " << d.id << " (OpenGL Version: " << glGetString(GL_VERSION) << ")" << std::endl;
 		SetUpWorldMatrix(d);
 
 		d.mainShader = new Shader(
