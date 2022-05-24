@@ -42,17 +42,17 @@ public:
 		return _projectionMatrix;
 	}
 
+	void UpdateViewProjection()
+	{
+		if(!editorModeCamera)
+			ViewMatrix = _projectionMatrix * Matrix::LookAt(transform.position, transform.position + forward, up);
+		else
+			ViewMatrix = _projectionMatrix * Matrix::LookAt(editorPosition, editorPosition + forward, up);
+	}
+
 	inline Matrix GetViewProjection()
 	{
-		Matrix view;
-
-		if(!editorModeCamera)
-			view = _projectionMatrix * Matrix::LookAt(transform.position, transform.position + forward, up);
-		else
-			view = _projectionMatrix * Matrix::LookAt(editorPosition, editorPosition + forward, up);
-
-		UpdateCameraSpace();
-		return view;
+		return ViewMatrix;
 	}
 
 	Vector3 GetCurrentPosition()

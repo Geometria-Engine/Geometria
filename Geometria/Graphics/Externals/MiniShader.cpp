@@ -82,7 +82,7 @@ std::string MiniShader::RewriteForShaderVersion(std::string content, float ver, 
 
 		content = StringAPI::ReplaceAll(content, "{ApplyMiniShaders}", miniS);
 
-		std::cout << content << std::endl;
+		//std::cout << content << std::endl;
 	}
 
 	return content;

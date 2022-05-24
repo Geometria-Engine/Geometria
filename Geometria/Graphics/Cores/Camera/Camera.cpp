@@ -55,6 +55,8 @@ void Camera::UpdateCameraSpace()
 	forward = Vector3::Normalize(forward);
 	right = Vector3::Normalize(Vector3::Cross(forward, worldUp));
 	up = Vector3::Normalize(Vector3::Cross(right, forward));
+
+	UpdateViewProjection();
 }
 
 void Camera::Mouse()

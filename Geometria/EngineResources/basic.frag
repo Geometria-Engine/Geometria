@@ -28,6 +28,7 @@ out vec4 fs_color;
 void Master_UseFirstTexture(inout vec4 t)
 {
     int index = int(texIndex);
+
     switch(index)
     {
     case -1:
@@ -87,8 +88,10 @@ void Master_UseFirstTexture(inout vec4 t)
 void main()
 {
     int Master_MiniShaderID = int(vs_miniShaderId);
+    vec4 f_tex = vec4(1, 1, 1, 1);
+    Master_UseFirstTexture(f_tex);
     vec3 Master_VertPosition = vs_position;
-    vec4 Master_Color = vs_color;
+    vec4 Master_Color = vs_color * f_tex;
 
     {ApplyMiniShaders}
 

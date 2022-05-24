@@ -1,3 +1,6 @@
+precision highp float;
+precision highp int;
+
 in vec3 vertex_position;
 in vec4 vertex_color;
 
@@ -52,6 +55,6 @@ void main()
 
 	{ApplyMiniShaders}
 
-	vs_position = vertex_position;
-	gl_Position = MVP * vec4(vertex_position, 1.0);
+	vs_position = vs_position;
+	gl_Position = MVP * vec4(vertex_position, 1.0f);
 }

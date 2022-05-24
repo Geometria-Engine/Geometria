@@ -74,6 +74,17 @@ public:
 	Sorting sort = Sorting::Update;
 	Mode mode = Mode::To3D;
 
+	enum DepthBuffer
+	{
+		Enabled,
+		DisableOnStart,
+		DisableOnEnd
+	};
+
+	DepthBuffer depthB = DepthBuffer::Enabled;
+
+	void SetDepthBufferState(DepthBuffer d) { depthB = d; }
+
 	int _lastVertCount = 0;
 	int _lastIndexCount = 0;
 	int _modifyVertexTimer = 0;

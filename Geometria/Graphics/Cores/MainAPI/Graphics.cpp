@@ -52,17 +52,17 @@ void Graphics::Update()
 
 //	if (VSync && Application::IsPlatform(Application::Platform::Windows))
 //	{
-//#ifdef _WIN32
-//		DEVMODE lpDevMode;
-//		EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode);
-//		//std::cout << lpDevMode.dmDisplayFrequency << std::endl;
-//		unsigned int microseconds = (1.0f / lpDevMode.dmDisplayFrequency) * 100000;
-//		auto wait_duration = std::chrono::microseconds(microseconds);
-//		std::this_thread::sleep_for(wait_duration);
-//#endif
+#ifdef _WIN32
+		DEVMODE lpDevMode;
+		EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode);
+		//std::cout << lpDevMode.dmDisplayFrequency << std::endl;
+		unsigned int microseconds = (1.0f / lpDevMode.dmDisplayFrequency) * 100000;
+		auto wait_duration = std::chrono::microseconds(microseconds);
+		std::this_thread::sleep_for(wait_duration);
+#endif
 //	}
 	
-	glfwSwapInterval(1);
+	//glfwSwapInterval(1);
 }
 
 bool Graphics::CanClose()

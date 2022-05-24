@@ -216,10 +216,10 @@ void Model::OnChange(bool modifyTransform, bool reCheck)
 	//YO
 	/*if (modifyTransform)
 	{*/
-
+	
 	if (modifyTransform)
 	{
-		translationMatrix = Matrix(1);
+		translationMatrix = Matrix(1.0f);
 		translationMatrix = Matrix::Translate(Vector3(-transform.position.x, -transform.position.y, -transform.position.z));
 
 		rotationMatrix = Matrix::Rotate(Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z + 180.0f));
