@@ -29,6 +29,8 @@ struct PhysicsContactListener : public physx::PxSimulationEventCallback
 
 struct RaycastBuffer
 {
+	Vector3 origin, end, direction;
+	int distance;
 	std::vector<ScriptBehaviour*> hitScripts;
 	bool HittedAnythingExcept(ScriptBehaviour* s)
 	{
@@ -39,6 +41,16 @@ struct RaycastBuffer
 		}
 
 		return false;
+	}
+
+	Vector3 GetPoint(float p)
+	{
+		return Vector3(origin.x + direction.x * p, origin.y + direction.y * p, origin.z + direction.z * p);
+	}
+
+	bool HittedAnything()
+	{
+		return hitScripts.size() != 0;
 	}
 };
 
@@ -83,4 +95,7 @@ public:
 
 	static bool Raycast(Vector3 origin, Vector3 direction, int maxDistance);
 	static bool Raycast(Vector3 origin, Vector3 direction, int maxDistance, RaycastBuffer& buffer);
+
+	static bool ScreenCameraRaycast(Camera& cam, Vector2 point, int maxDistance, RaycastBuffer& buff);
+	static bool ScreenCameraRaycast(Camera& cam, Vector2 point, int maxDistance);
 };

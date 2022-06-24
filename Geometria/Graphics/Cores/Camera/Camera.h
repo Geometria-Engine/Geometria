@@ -76,6 +76,10 @@ public:
 		return _uiMatrix;
 	}
 
+	Vector3 UnProject(Vector3 v);
+
+	Vector3 GetDirectionFromScreen(Vector2 point);
+	
 	void Mouse();
 	void MoveDirection(const int direction);
 };

@@ -1,3 +1,6 @@
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #include "Vector.h"
 #include <glm/detail/type_vec4.hpp>
 #include <iostream>
@@ -154,6 +157,13 @@ struct Matrix {
 		return result;
 	}
 
+	static Matrix Inverse(Matrix& matrix)
+	{
+		Matrix result;
+		result.coreMatrix = glm::inverse(matrix.coreMatrix);
+		return result;
+	}
+
 	static Matrix LookAt(Vector3 eye, Vector3 center, Vector3 up)
 	{
 		Matrix result;
@@ -165,4 +175,13 @@ struct Matrix {
 		result.coreMatrix = glm::lookAt(glm::vec3(eye.x, eye.y, eye.z), glm::vec3(center.x, center.y, center.z), glm::vec3(up.x, up.y, up.z));
 		return result;
 	}
+
+	static Vector3 UnProject(Vector3 v, Matrix projection, Matrix view, Vector4 viewport)
+	{
+		glm::vec3 vec(v.x, v.y, v.z);
+		glm::vec3 res = glm::unProject(vec, view.coreMatrix, projection.coreMatrix, glm::vec4(viewport.x, viewport.y, viewport.z, viewport.w));
+		return Vector3::Normalize(Vector3(res.x, res.y, res.z));
+	}
 };
+
+#endif

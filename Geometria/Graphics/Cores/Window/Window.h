@@ -19,6 +19,7 @@ public:
 	static bool keys[1024];
 	static int keysState[1024];
 	static bool mouse[32];
+	static bool mouseState[32];
 
 	static bool SizeChanged;
 

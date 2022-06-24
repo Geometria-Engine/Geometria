@@ -243,6 +243,10 @@ struct ScriptBehaviour
 	{
 		isBeingDestroyed = true;
 		OnDestroy();
+		
+		for(auto i : scripts)
+			i->DestroyScript();
+
 		delete this;
 	}
 

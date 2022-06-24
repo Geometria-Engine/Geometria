@@ -81,9 +81,17 @@ public:
 		DisableOnEnd
 	};
 
+	enum InternalDepthMask
+	{
+		DMEnabled,
+		DMDisabled
+	};
+
 	DepthBuffer depthB = DepthBuffer::Enabled;
+	InternalDepthMask intDM = InternalDepthMask::DMEnabled;
 
 	void SetDepthBufferState(DepthBuffer d) { depthB = d; }
+	void SetInternalDepthMask(InternalDepthMask i ) { intDM = i; }
 
 	int _lastVertCount = 0;
 	int _lastIndexCount = 0;

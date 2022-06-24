@@ -809,8 +809,6 @@ void ImGUIElement::OnUpdate()
 					owner->containsWindowsInside = true;
 				}
 
-				ImGUIElement::_isMouseOnAnyWindow = false;
-
 				if (window)
 				{
 					if (ImGui::IsWindowHovered())

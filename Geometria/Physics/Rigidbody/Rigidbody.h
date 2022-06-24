@@ -32,6 +32,7 @@ struct Rigidbody : public ScriptBehaviour
 	BoxCollider* boxC;
 
 	bool freezePositionX = false;
+	bool freezePositionY = false;
 	bool freezePositionZ = false;
 
 	Transform& GetRigidbodyTransform()

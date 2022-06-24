@@ -99,3 +99,49 @@ void Camera::MoveDirection(const int direction)
 		break;
 	}*/
 }
+
+Vector3 Camera::UnProject(Vector3 v)
+{
+	return Matrix::UnProject(v, _projectionMatrix, ViewMatrix, Vector4(0, 0, Graphics::GetMainWindow().width, Graphics::GetMainWindow().height));
+}
+
+double ConvertFrom_Range1_Input_To_Range2_Output(double _input_range_min, 
+        double _input_range_max, double _output_range_min, 
+        double _output_range_max, double _input_value_tobe_converted)
+{
+    double diffOutputRange = abs((_output_range_max - _output_range_min));
+    double diffInputRange = abs((_input_range_max - _input_range_min));
+    double convFactor = (diffOutputRange / diffInputRange);
+    return (_output_range_min + (convFactor * (_input_value_tobe_converted - _input_range_min)));
+}
+
+Vector3 ScreenToWorldDirection(Matrix proj, Matrix view, Vector2 screen)
+{
+	Matrix modifiedView = view;
+	modifiedView.coreMatrix[3][0] = 0.0f;
+	modifiedView.coreMatrix[3][1] = 0.0f;
+	modifiedView.coreMatrix[3][2] = 0.0f;
+
+	// WHAT THE FUCK IS GOING ON WITH THE X?!?!?!?!
+
+	float x = (screen.x / Graphics::GetMainWindow().width) * 2 - 1;
+	float widthDivided = (float)Graphics::GetMainWindow().width / ((float)Graphics::GetMainWindow().height * 2);
+	x = ConvertFrom_Range1_Input_To_Range2_Output(0, widthDivided, 0, 1.05, x);
+
+	//std::cout << x << std::endl;
+
+	float y = (4.0f * screen.y) / Graphics::GetMainWindow().height - 2.0f;
+
+	//std::cout << "Width: " << Graphics::GetMainWindow().width << " || Height: " << Graphics::GetMainWindow().height << "\n";
+
+	Vector2 screenNdc = Vector2(x, y);
+	Vector3 world = Matrix::Inverse(proj * modifiedView) * Vector4(
+		screenNdc.x, -screenNdc.y, -1.0f, -1.0f);
+
+	return world;
+}
+
+Vector3 Camera::GetDirectionFromScreen(Vector2 point)
+{
+	return ScreenToWorldDirection(_projectionMatrix, ViewMatrix, point);
+}

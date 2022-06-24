@@ -70,6 +70,7 @@ void PhysicalCore::PhysicalCoreLoop()
         //std::cout << "Running Physical Core Number " << id << std::endl;
         std::lock_guard<std::mutex> mutex(NUT);
         int t = 0;
+        //std::cout << "[Multithreading Loop...]" << "\r";
         for (auto i : allThreads)
         {
             i->clock += milliseconds;

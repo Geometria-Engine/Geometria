@@ -1,5 +1,6 @@
 #include "PhysicsManager.h"
 #include "../Physics/Colliders/BoxCollider.h"
+#include "Graphics/Cores/Camera/Camera.h"
 
 physx::PxRigidDynamic* dynamicTest;
 
@@ -21,11 +22,12 @@ std::vector<physx::PxRigidStatic*> PhysicsManager::allStatics;
 
 void PhysicsManager::OnStartup()
 {
-	
+	isUniversal = true;
 }
 
 void PhysicsManager::OnStart()
 {
+	std::cout << "Physics Manager Started!" << std::endl;
 	if (PhysicsManager::sceneCreated == true && gScene != nullptr)
 	{
 		gScene->release();
@@ -145,6 +147,17 @@ bool PhysicsManager::Raycast(Vector3 origin, Vector3 direction, int maxDistance,
 
 	physx::PxVec3 o(origin.x, origin.y, origin.z), d(direction.x, direction.y, direction.z);
 	bool ray = PhysicsManager::gScene->raycast(o, d, maxDistance, hit);
+
+	buff.origin = origin;
+	buff.end = Vector3(
+		origin.x + direction.x * maxDistance,
+		origin.y + direction.y * maxDistance,
+		origin.z + direction.z * maxDistance);
+
+	buff.direction = direction;
+
+	buff.distance = maxDistance;
+	
 	if(ray)
 	{
 		for (physx::PxU32 i = 0; i < hit.nbTouches; i++)
@@ -155,6 +168,19 @@ bool PhysicsManager::Raycast(Vector3 origin, Vector3 direction, int maxDistance,
 	}
 
 	return false;
+}
+
+bool PhysicsManager::ScreenCameraRaycast(Camera& cam, Vector2 point, int maxDistance, RaycastBuffer& buff)
+{
+	Vector3 direction = cam.GetDirectionFromScreen(point);
+	return PhysicsManager::Raycast(cam.GetCurrentPosition(), direction, maxDistance, buff);
+}
+
+bool PhysicsManager::ScreenCameraRaycast(Camera& cam, Vector2 point, int maxDistance)
+{
+	Vector3 direction = cam.GetDirectionFromScreen(point);
+	//std::cout << point.ToString() << " | " << direction.ToString() << " | " << cam.GetCurrentPosition().ToString() << std::endl;
+	return PhysicsManager::Raycast(cam.GetCurrentPosition(), direction, maxDistance);
 }
 
 physx::PxFilterFlags PhysicsManager::contactReportFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,

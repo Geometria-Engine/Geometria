@@ -36,5 +36,7 @@ struct BoxCollider : public ScriptBehaviour
 	void OnInspector();
 	void OnSave();
 	void OnUpdate();
+	void OnDestroy();
+	void OnTransformChange(int value);
 	void SetScale(Vector3 size);
 };

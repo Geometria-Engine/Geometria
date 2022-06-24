@@ -26,6 +26,12 @@ void Rigidbody::OnUpdate()
 					pos = boxC->boxDynamic->getGlobalPose().p;
 				}
 
+				if (freezePositionY)
+				{
+					boxC->boxDynamic->setGlobalPose(physx::PxTransform(pos.x, GetTransform().position.y, pos.z));
+					pos = boxC->boxDynamic->getGlobalPose().p;
+				}
+
 				if (freezePositionZ)
 				{
 					boxC->boxDynamic->setGlobalPose(physx::PxTransform(pos.x, pos.y, GetTransform().position.z));

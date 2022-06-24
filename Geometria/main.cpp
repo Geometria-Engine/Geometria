@@ -287,6 +287,8 @@ int main(int argc, char** argv)
 
         Hierarchy::UpdateScripts();
 
+        ImGUIElement::_isMouseOnAnyWindow = false;
+        
         RendererCore::Render();
 
         Graphics::Update();

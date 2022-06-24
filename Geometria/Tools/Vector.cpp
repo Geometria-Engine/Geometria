@@ -689,11 +689,16 @@ Vector4::Vector4(const Color& A) : x(A.r), y(A.g), z(A.b), w(A.a) { }
 
 void Vector4::SendChangeEvent()
 {
-	for (int i = 0; i < sharedModels.size(); i++)
+	if(EventEnabled())
 	{
-		if (EventEnabled())
+		for (int i = 0; i < sharedModels.size(); i++)
 		{
 			sharedModels[i]->OnChange();
+		}
+
+		for(int i = 0; i < sharedFunctions.size(); i++)
+		{
+			sharedFunctions[i]();
 		}
 	}
 }

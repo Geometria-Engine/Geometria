@@ -79,5 +79,5 @@ void Application::Start()
 
 	GameMain::Init();
 
-	//Application::SetGame();
+	Application::SetGame();
 }

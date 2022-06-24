@@ -15,6 +15,10 @@ void BoxCollider::OnStart()
 			boxStatic = PhysicsManager::CreateStaticBox(*this, GetTransform().position, GetTransform().scale * size);
 			boxStatic->userData = this;
 		}
+
+		GetTransform().position.AddEventFunction([this]{ OnTransformChange(0); });
+		GetTransform().rotation.AddEventFunction([this]{ OnTransformChange(1); });
+		GetTransform().scale.AddEventFunction([this]{ OnTransformChange(2); });
 	}
 	else
 	{
@@ -32,6 +36,31 @@ void BoxCollider::OnInspector()
 	VisualAccess_Title(BoxCollider);
 }
 
+void BoxCollider::OnTransformChange(int value)
+{
+	switch(value)
+	{
+		case 0:
+			if(boxStatic != nullptr)
+			{
+				boxStatic->setGlobalPose(physx::PxTransform(GetTransform().position.x, GetTransform().position.y, GetTransform().position.z));
+			}
+			break;
+
+		case 1:
+			if(boxStatic != nullptr)
+			{
+				physx::PxTransform t = boxStatic->getGlobalPose();
+				t.rotate(physx::PxVec3(GetTransform().rotation.x, GetTransform().rotation.y, GetTransform().rotation.z));
+			}
+			break;
+
+		case 2:
+			SetScale(this->size);
+			break;
+	}
+}
+
 void BoxCollider::OnSave()
 {
 	SaveInclude(BoxCollider, "Physics/Colliders/BoxCollider.h");
@@ -43,6 +72,31 @@ void BoxCollider::OnSave()
 void BoxCollider::OnUpdate()
 {
 
+}
+
+void BoxCollider::OnDestroy()
+{
+	if(boxDynamic != nullptr)
+	{
+		boxDynamic->detachShape(*boxShape);
+		boxDynamic->release();
+		boxDynamic = nullptr;
+	}
+
+	if(boxStatic != nullptr)
+	{
+		boxStatic->detachShape(*boxShape);
+		boxStatic->release();
+		boxStatic = nullptr;
+	}
+
+	if (boxShape != nullptr)
+	{
+		boxShape->release();
+		boxShape = nullptr;
+	}
+
+	//delete this;
 }
 
 void BoxCollider::SetScale(Vector3 size)

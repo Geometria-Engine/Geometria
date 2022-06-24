@@ -6,7 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+#include <functional>
 
+struct Matrix;
 class Model;
 struct Color;
 struct Vector3;
@@ -34,6 +36,11 @@ struct Vector2 {
 	Vector2(const Color& A);
 
 	Vector2(const float& A) : x(A), y(A) {}
+
+	std::string ToString()
+	{
+		return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+	}
 
 	//Doing the operators in the .h will cause the compiler to go bananas.
 	//Please put every function that combines other structs/classes in this header into the .cpp to avoid any conflict :D
@@ -175,8 +182,14 @@ struct Vector3 {
 	float x, y, z;
 
 	std::vector<Model*> sharedModels;
+	std::vector<std::function<void()>> sharedFunctions;
 
 	void SendChangeEvent();
+
+	void AddEventFunction(std::function<void()> theEvent)
+	{
+		sharedFunctions.push_back(theEvent);
+	}
 
 	Vector3() : x(0), y(0), z(0) {}
 
@@ -366,12 +379,18 @@ struct Vector4 {
 	float x, y, z, w;
 
 	std::vector<Model*> sharedModels;
+	std::vector<std::function<void()>> sharedFunctions;
 
 	bool eventEnabled = true;
 
 	bool& EventEnabled() { return eventEnabled; }
 
 	void SendChangeEvent();
+
+	void AddEventFunction(std::function<void()> theEvent)
+	{
+		sharedFunctions.push_back(theEvent);
+	}
 
 	Vector4() : x(0), y(0), z(0), w(0) {}
 

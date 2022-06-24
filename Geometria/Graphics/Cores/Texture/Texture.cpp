@@ -132,32 +132,40 @@ void TextureGroup::UploadToGPU()
 			count = 0;
 			//std::cout << "============" << std::endl;
 			unsigned int normalH = 0;
-			for (int h = forHeight; h < forHeight + allTextures[i]->height; h++)
+			std::cout << allTextures[i]->filename << "\n";
+			if (allTextures[i]->data.size() != 0)
 			{
-				unsigned int normalW = 0;
-				for (int w = forWidth; w < forWidth + allTextures[i]->width; w++)
+				for (int h = forHeight; h < forHeight + allTextures[i]->height; h++)
 				{
-					unsigned int index = 0;
-					index = (h * width + w) * 4;
-					unsigned int r = index, g = index + 1, b = index + 2, a = index + 3;
-					unsigned int imageIndex = (normalH * allTextures[i]->width + normalW) * 4;
-					unsigned int imR = imageIndex, imG = imageIndex + 1, imB = imageIndex + 2, imA = imageIndex + 3;
-
-					//std::cout << index << "(" << imR << ")" << " ";
-
-					/*if (i == 142)
+					unsigned int normalW = 0;
+					for (int w = forWidth; w < forWidth + allTextures[i]->width; w++)
 					{
-						std::cout << "4 * " << h << " * " << width << " + " << w << " = " << index << std::endl;
-					}*/
+						unsigned int index = 0;
+						index = (h * width + w) * 4;
+						unsigned int r = index, g = index + 1, b = index + 2, a = index + 3;
+						unsigned int imageIndex = (normalH * allTextures[i]->width + normalW) * 4;
+						unsigned int imR = imageIndex, imG = imageIndex + 1, imB = imageIndex + 2, imA = imageIndex + 3;
 
-					groupData[r] = imageData[imR];
-					groupData[g] = imageData[imG];
-					groupData[b] = imageData[imB];
-					groupData[a] = imageData[imA];
+						//std::cout << index << "(" << imR << ")" << " ";
 
-					normalW++;
+						/*if (i == 142)
+						{
+							std::cout << "4 * " << h << " * " << width << " + " << w << " = " << index << std::endl;
+						}*/
+
+						groupData[r] = imageData[imR];
+						groupData[g] = imageData[imG];
+						groupData[b] = imageData[imB];
+						groupData[a] = imageData[imA];
+
+						normalW += 1;
+					}
+					normalH++;
 				}
-				normalH++;
+			}
+			else
+			{
+				std::cout << "[ERROR] " << allTextures[i]->filename << " has no data!" << std::endl;
 			}
 
 			imageData.clear();

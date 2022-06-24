@@ -598,12 +598,12 @@ void RendererCore::SortVertices()
 						std::cout << d.allVerts[i].modelId << std::endl;
 					}*/
 
-					std::stable_sort(d.allModels.begin(), d.allModels.end(), [&](Model* i, Model* j)
+					std::sort(d.allModels.begin(), d.allModels.end(), [&](Model* i, Model* j)
 						{
-							if (i->vertices.size() <= 4 && j->vertices.size() <= 4)
-							{
-								return i->transform.position.z < j->transform.position.z;
-							}
+							//if (i->vertices.size() <= 4 && j->vertices.size() <= 4)
+							//{
+							//	return i->transform.position.z < j->transform.position.z;
+							//}
 
 							return Vector3::Distance(i->transform.position, Graphics::MainCamera()->GetCurrentPosition()) > Vector3::Distance(j->transform.position, Graphics::MainCamera()->GetCurrentPosition());
 						});
@@ -863,6 +863,9 @@ void RendererCore::OpenGL_Render()
 				if(d.depthB == DrawCall::DepthBuffer::DisableOnStart)
 					glClear(GL_DEPTH_BUFFER_BIT);
 
+				if(d.intDM == DrawCall::InternalDepthMask::DMDisabled)
+					glDepthMask(GL_FALSE);
+
 				if (d.deleteProcess)
 				{
 					RendererCore::SortVertices();
@@ -997,6 +1000,9 @@ void RendererCore::OpenGL_Render()
 
 				if(d.depthB == DrawCall::DepthBuffer::DisableOnEnd)
 					glClear(GL_DEPTH_BUFFER_BIT);
+
+				if(d.intDM == DrawCall::InternalDepthMask::DMDisabled)
+					glDepthMask(GL_TRUE);
 			}
 		}
 	}

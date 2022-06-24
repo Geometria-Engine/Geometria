@@ -3,6 +3,7 @@
 #include <iostream>
 
 bool Window::mouse[32];
+bool Window::mouseState[32];
 bool Window::keys[1024];
 int Window::keysState[1024];
 

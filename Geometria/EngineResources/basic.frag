@@ -93,6 +93,11 @@ void main()
     vec3 Master_VertPosition = vs_position;
     vec4 Master_Color = vs_color * f_tex;
 
+    if(Master_Color.a < 0.1)
+    {
+        discard;
+    }
+
     {ApplyMiniShaders}
 
     fs_color = Master_Color;
