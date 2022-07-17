@@ -99,6 +99,11 @@ void PhysicsManager::SetGravity(Vector3 g)
 
 physx::PxRigidStatic* PhysicsManager::CreateStaticBox(BoxCollider& collider, Vector3 position, Vector3 scale)
 {
+	return CreateStaticBox(collider, position, scale, false);
+}
+
+physx::PxRigidStatic* PhysicsManager::CreateStaticBox(BoxCollider& collider, Vector3 position, Vector3 scale, bool isTrigger)
+{
 	physx::PxShape* boxShape = PhysicsManager::gPhysics->createShape(physx::PxBoxGeometry(scale.x / 2, scale.y / 2, scale.z / 2), *PhysicsManager::gMaterial);
 
 	physx::PxRigidStatic* boxStatic = physx::PxCreateStatic(*PhysicsManager::gPhysics,
@@ -116,12 +121,24 @@ physx::PxRigidStatic* PhysicsManager::CreateStaticBox(BoxCollider& collider, Vec
 
 physx::PxRigidDynamic* PhysicsManager::CreateDynamicBox(BoxCollider& collider, Vector3 position, Vector3 scale)
 {
+	return CreateDynamicBox(collider, position, scale, false);
+}
+
+physx::PxRigidDynamic* PhysicsManager::CreateDynamicBox(BoxCollider& collider, Vector3 position, Vector3 scale, bool isTrigger)
+{
 	physx::PxShape* boxShape = PhysicsManager::gPhysics->createShape(physx::PxBoxGeometry(scale.x / 2, scale.y / 2, scale.z / 2), *PhysicsManager::gMaterial);
 	collider.boxShape = boxShape;
 
 	physx::PxRigidDynamic* boxDynamic = physx::PxCreateDynamic(*PhysicsManager::gPhysics,
 		physx::PxTransform(physx::PxVec3(position.x, position.y, position.z)),
 		*boxShape, 0);
+
+	if(isTrigger)
+	{
+		boxDynamic->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+		boxShape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, false);
+		boxShape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+	}
 
 	PhysicsManager::allDynamics.push_back(boxDynamic);
 
@@ -214,19 +231,56 @@ void PhysicsContactListener::onContact(const physx::PxContactPairHeader& pairHea
 
 		if (cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_FOUND)
 		{
-			if (b1 != nullptr)
-				b1->OnCollisionEnter();
-
-			if (b2 != nullptr)
-				b2->OnCollisionEnter();
+			if (b1 != nullptr && b2 != nullptr)
+			{
+				b1->OnCollisionEnter(*b2);
+				b2->OnCollisionEnter(*b1);
+			}
 		}
 		else if(cp.events & physx::PxPairFlag::eNOTIFY_TOUCH_LOST)
 		{
-			if (b1 != nullptr)
-				b1->OnCollisionExit();
-
-			if (b2 != nullptr)
-				b2->OnCollisionExit();
+			if (b1 != nullptr && b2 != nullptr)
+			{
+				b1->OnCollisionExit(*b2);
+				b2->OnCollisionExit(*b1);
+			}
 		}
 	}
+}
+
+void PhysicsContactListener::onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count)
+{
+    for(physx::PxU32 i=0; i < count; i++)
+    {
+        // ignore pairs when shapes have been deleted
+        if (pairs[i].flags & (physx::PxTriggerPairFlag::eREMOVED_SHAPE_TRIGGER |
+            physx::PxTriggerPairFlag::eREMOVED_SHAPE_OTHER))
+            continue;
+
+        const physx::PxTriggerPair& cp = pairs[i];
+
+		if (pairs[i].otherActor != nullptr && pairs[i].triggerActor != nullptr)
+		{
+			ScriptBehaviour* b1 = reinterpret_cast<ScriptBehaviour*>(pairs[i].otherActor->userData);
+			ScriptBehaviour* b2 = reinterpret_cast<ScriptBehaviour*>(pairs[i].triggerActor->userData);
+
+			//std::cout << "Trigger Touch!" << std::endl;
+
+			if (b1 != nullptr && b2 != nullptr)
+			{
+				if(!b2->_isTriggerEnter)
+				{
+					b1->OnTriggerEnter(*b2);
+					b2->OnTriggerEnter(*b1);
+				}
+				else
+				{
+					b1->OnTriggerExit(*b2);
+					b2->OnTriggerExit(*b1);
+				}
+			}
+		}
+		//else
+		//	std::cout << "Trigger Touch but Actor is nullptr!" << std::endl;
+    }
 }

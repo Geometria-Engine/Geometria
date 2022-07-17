@@ -203,6 +203,8 @@ struct ScriptBehaviour
 	bool _editorStart = false;
 	bool _isCollisionEnter = false;
 	bool _isCollisionExit = false;
+	bool _isTriggerEnter = false;
+	bool _isTriggerExit = true;
 	bool isEnabled = true;
 	bool isBeingDestroyed = false;
 
@@ -273,18 +275,18 @@ struct ScriptBehaviour
 
 	virtual void OnInspector() { return; }
 
-	virtual void OnCollisionEnter() 
+	virtual void OnCollisionEnter(ScriptBehaviour& hit) 
 	{
 		if (owner != nullptr && !_isCollisionEnter)
 		{
-			owner->OnCollisionEnter();
+			owner->OnCollisionEnter(hit);
 		}
 		else
 		{
 			for (auto i : scripts)
 			{
 				i->_isCollisionEnter = true;
-				i->OnCollisionEnter();
+				i->OnCollisionEnter(hit);
 			}
 		}
 
@@ -292,23 +294,63 @@ struct ScriptBehaviour
 		return; 
 	}
 
-	virtual void OnCollisionExit()
+	virtual void OnCollisionExit(ScriptBehaviour& hit)
 	{
 		if (owner != nullptr && !_isCollisionExit)
 		{
-			owner->OnCollisionExit();
+			owner->OnCollisionExit(hit);
 		}
 		else
 		{
 			for (auto i : scripts)
 			{
 				i->_isCollisionExit = true;
-				i->OnCollisionExit();
+				i->OnCollisionExit(hit);
 			}
 		}
 
 		_isCollisionExit = false;
 		return;
+	}
+
+	virtual void OnTriggerEnter(ScriptBehaviour& hit)
+	{
+		if (owner != nullptr && !_isTriggerEnter)
+		{
+			owner->OnTriggerEnter(hit);
+		}
+		else
+		{
+			for (auto i : scripts)
+			{
+				i->_isTriggerEnter = true;
+				i->OnTriggerEnter(hit);
+			}
+		}
+
+		_isTriggerEnter = true;
+		_isTriggerExit = false;
+		return; 
+	}
+
+	virtual void OnTriggerExit(ScriptBehaviour& hit)
+	{
+		if (owner != nullptr && !_isTriggerExit)
+		{
+			owner->OnTriggerExit(hit);
+		}
+		else
+		{
+			for (auto i : scripts)
+			{
+				i->_isTriggerExit = true;
+				i->OnTriggerExit(hit);
+			}
+		}
+
+		_isTriggerEnter = false;
+		_isTriggerExit = true;
+		return; 
 	}
 
 	template <typename T>

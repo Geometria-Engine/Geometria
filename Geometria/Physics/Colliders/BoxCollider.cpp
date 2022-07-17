@@ -71,7 +71,11 @@ void BoxCollider::OnSave()
 
 void BoxCollider::OnUpdate()
 {
-
+	if(_setTriggerOnUpdate)
+	{
+		SetTrigger(_isTrigger);
+		_setTriggerOnUpdate = false;
+	}
 }
 
 void BoxCollider::OnDestroy()
@@ -135,4 +139,34 @@ void BoxCollider::SetScale(Vector3 size)
 
 		boxStatic->attachShape(*boxShape);
 	}
+}
+
+void BoxCollider::SetTrigger(bool t)
+{
+	_isTrigger = t;
+	if(PhysicsManager::sceneCreated)
+	{
+		if(GetScript<Rigidbody>() != nullptr && boxDynamic != nullptr)
+		{
+			boxDynamic->detachShape(*boxShape);
+			boxShape->release();
+			boxShape = nullptr;
+
+			boxDynamic->release();
+			boxDynamic = nullptr;
+
+			if(t)
+			{
+				boxDynamic = PhysicsManager::CreateDynamicBox(*this, GetTransform().position, GetTransform().scale * size, true);
+				boxDynamic->userData = this;
+			}
+			else
+			{
+				boxDynamic = PhysicsManager::CreateDynamicBox(*this, GetTransform().position, GetTransform().scale * size, false);
+				boxDynamic->userData = this;
+			}
+		}
+	}
+	else
+		_setTriggerOnUpdate = true;
 }

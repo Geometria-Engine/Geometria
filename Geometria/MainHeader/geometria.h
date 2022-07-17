@@ -17,6 +17,7 @@
 #include "DebugTools/DebugTools.h"
 #include "String/StringAPI.h"
 #include "Web/Web.h"
+#include "MiniAudio/MiniAudioSource.h"
 #undef CreateWindow
 #ifndef TRUE
 #define TRUE 1
