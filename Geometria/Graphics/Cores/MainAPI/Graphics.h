@@ -9,6 +9,8 @@
 #include "../Shader/Shader.h"
 #include "../Camera/Camera.h"
 
+#include "CommonObjects/Empty.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #undef CreateWindow
@@ -46,6 +48,28 @@ public:
 	static void GetFrameBuffer();
 	static void SetResizeCall();
 	static bool VSync;
+
+	static void SetResolution(Vector2 resolution)
+	{
+		glfwSetWindowSize(_currentWindow.openGLWindow, resolution.x, resolution.y);
+		_currentWindow.width = resolution.x;
+		_currentWindow.height = resolution.y;
+	}
+
+	static Empty* _drawBorderlessWindowManager;
+
+	static void EnableDraggableBorderless();
+
+	static void SetBorderless(bool b)
+	{
+		if(b)
+			glfwSetWindowAttrib(_currentWindow.openGLWindow, GLFW_DECORATED, GLFW_FALSE);
+		else
+			glfwSetWindowAttrib(_currentWindow.openGLWindow, GLFW_DECORATED, GLFW_TRUE);
+
+		
+	}
+
 	//==[GRAPHIC LIBRARY CALLBACKS]==/
 
 	//=================================[ GPU ]=================================//
