@@ -42,4 +42,5 @@ struct Rigidbody : public ScriptBehaviour
 	}
 
 	void SetVelocity(Vector3 add);
+	Vector3 GetVelocity();
 };

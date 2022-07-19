@@ -75,3 +75,17 @@ void Rigidbody::SetVelocity(Vector3 add)
 		boxC->boxDynamic->setLinearVelocity(physx::PxVec3(add.x, add.y, add.z));
 	}
 }
+
+Vector3 Rigidbody::GetVelocity()
+{
+	if(boxC != nullptr)
+	{
+		if(boxC->boxDynamic != nullptr)
+		{
+			physx::PxVec3 velocity = boxC->boxDynamic->getLinearVelocity();
+			return Vector3(velocity.x, velocity.y, velocity.z);
+		}
+	}
+
+	return Vector3(0, 0, 0);
+}
