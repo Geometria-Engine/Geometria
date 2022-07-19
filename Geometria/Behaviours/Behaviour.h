@@ -258,10 +258,14 @@ struct ScriptBehaviour
 	void AddChild(ScriptBehaviour& child);
 	void RemoveMyselfFromHierarchy() { Hierarchy::allScripts.erase(Hierarchy::allScripts.begin() + scriptId); }
 
+	bool firstFrame = true;
+
 	virtual void OnStartup() { return; }
 	virtual void OnInternal() { return; }
 	virtual void OnStart() 
 	{
+		firstFrame = true;
+
 		if (ClassType == Class::Script || ClassType == Class::Static)
 		{
 			Hierarchy::allUpdateScripts.push_back(this);
@@ -270,7 +274,13 @@ struct ScriptBehaviour
 		return; 
 	}
 	virtual void OnEditorStart() { return; }
-	virtual void OnUpdate() { return; }
+
+	virtual void OnFirstFrame() { return; }
+	virtual void OnUpdate() 
+	{
+		return; 
+	}
+
 	virtual void OnEditorUpdate() { return; }
 
 	virtual void OnInspector() { return; }

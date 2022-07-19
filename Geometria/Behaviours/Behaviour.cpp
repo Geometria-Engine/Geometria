@@ -152,6 +152,12 @@ void Hierarchy::UpdateScripts()
 	{
 		for (int i = 0; i < Hierarchy::allUpdateScripts.size(); i++)
 		{
+			if(Hierarchy::allUpdateScripts[i]->firstFrame)
+			{
+				Hierarchy::allUpdateScripts[i]->OnFirstFrame();
+				Hierarchy::allUpdateScripts[i]->firstFrame = false;
+			}
+
 			Hierarchy::allUpdateScripts[i]->OnUpdate();
 		}
 	}
