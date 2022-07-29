@@ -50,7 +50,20 @@ struct Files
 	static std::string RunCommand(std::string cmd);
 	static std::string GetPathFromCommand(std::string cmd);
 	static std::string GetValueFromCommand(std::string cmd);
+
 	static void ClearConsole();
+	static void ShowConsole()
+	{
+		#ifdef _WIN32
+			ShowWindow(GetConsoleWindow(), SW_SHOW);
+		#endif
+	}
+	static void HideConsole()
+	{
+		#ifdef _WIN32
+			ShowWindow(GetConsoleWindow(), SW_HIDE);
+		#endif
+	}
 
 	static void ChangeCurrentDirectory(std::string path);
 
