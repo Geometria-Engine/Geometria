@@ -202,14 +202,10 @@ void Graphics::SetWindowTitle(const char* title)
 void Graphics::SetWindowIcon(const char* image_path)
 {
 	// Loading the image
-	int width = 0;
-	int height = 0;
-	std::vector<unsigned char> img_data = Files::GetImageData(image_path, width, height);
-
 	GLFWimage image[1];
 
-	image[0].width = width;
-	image[0].height = height;
+	std::vector<unsigned char> img_data = Files::GetImageData(image_path, image[0].width, image[0].height);
+
 	image[0].pixels = img_data.data();
 
 	//==[ OPENGL ]==//
