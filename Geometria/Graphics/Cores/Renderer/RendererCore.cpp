@@ -373,15 +373,15 @@ void RendererCore::SetVAttr_AMDWindows(DrawCall& d)
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
-	// Color
-	// 2
-	glVertexAttribPointer(pointerPosition, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-	glEnableVertexAttribArray(pointerPosition);
-	pointerPosition++;
-
 	// Vertex Position
 	// 3
 	glVertexAttribPointer(pointerPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+	glEnableVertexAttribArray(pointerPosition);
+	pointerPosition++;
+
+	// Color
+	// 2
+	glVertexAttribPointer(pointerPosition, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
