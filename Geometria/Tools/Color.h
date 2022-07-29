@@ -85,10 +85,10 @@ struct Color
 	friend bool operator==(const Color& l, Vector4& r);
 	friend bool operator==(const Color& l, Color& r);
 
-	friend bool operator!=(const Color& l, Vector2& r);
-	friend bool operator!=(const Color& l, Vector3& r);
-	friend bool operator!=(const Color& l, Vector4& r);
-	friend bool operator!=(const Color& l, Color& r);
+	friend bool operator!=(const Color& l, const Vector2& r);
+	friend bool operator!=(const Color& l, const Vector3& r);
+	friend bool operator!=(const Color& l, const Vector4& r);
+	friend bool operator!=(const Color& l, const Color& r);
 
 	friend bool operator>=(const Color& l, Vector2& r);
 	friend bool operator>=(const Color& l, Vector3& r);

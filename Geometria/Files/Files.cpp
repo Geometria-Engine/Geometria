@@ -15,7 +15,7 @@
 #define POPEN _popen
 #define PCLOSE _pclose
 #endif
-#include <Application\Application.h>
+#include <Application/Application.h>
 
 #ifdef __linux__
 #define POPEN popen
