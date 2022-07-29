@@ -157,7 +157,8 @@ public:
 
 	Model(Primitives p)
 	{
-		*this = Model(p, Vector4(0), Vector4(0), Vector4(1));
+		if (p == Primitives::SQUARE)
+			*this = Model::Square(*this, Vector3(0), Vector3(0), Vector3(1));
 	}
 
 	Model(Primitives p, Vector3 position, Vector3 rotation, Vector3 scale)
