@@ -191,6 +191,13 @@ void Graphics::SetResizeCall()
 	}
 }
 
+void Graphics::SetWindowTitle(const char* title)
+{
+	//==[ OPENGL ]==//
+	{
+		glfwSetWindowTitle(_currentWindow.openGLWindow, title);
+	}
+}
 
 void Graphics::EnableDraggableBorderless()
 {
