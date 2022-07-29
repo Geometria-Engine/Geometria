@@ -199,6 +199,25 @@ void Graphics::SetWindowTitle(const char* title)
 	}
 }
 
+void Graphics::SetWindowIcon(const char* image_path)
+{
+	// Loading the image
+	int width = 0;
+	int height = 0;
+	std::vector<unsigned char> img_data = Files::GetImageData(image_path, width, height);
+
+	GLFWimage image[1];
+
+	image[0].width = width;
+	image[0].height = height;
+	image[0].pixels = img_data.data();
+
+	//==[ OPENGL ]==//
+	{
+		glfwSetWindowIcon(_currentWindow.openGLWindow, 1, image);
+	}
+}
+
 void Graphics::EnableDraggableBorderless()
 {
 	_drawBorderlessWindowManager = new Empty();
