@@ -367,15 +367,15 @@ void RendererCore::SetVAttr_AMDWindows(DrawCall& d)
 	// Differences with Universal:
 	// - To be honest, i don't fucking know what the fuck the AMD Windows Drivers even want at this point
 
-	// Texture Group ID
-	// 1
-	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureGroupId));
-	glEnableVertexAttribArray(pointerPosition);
-	pointerPosition++;
-
 	// Vertex Position
 	// 3
 	glVertexAttribPointer(pointerPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+	glEnableVertexAttribArray(pointerPosition);
+	pointerPosition++;
+
+	// Texture Group ID
+	// 1
+	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureGroupId));
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
