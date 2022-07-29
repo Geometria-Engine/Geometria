@@ -367,6 +367,11 @@ void RendererCore::SetVAttr_AMDWindows(DrawCall& d)
 	// Differences with Universal:
 	// - To be honest, i don't fucking know what the fuck the AMD Windows Drivers even want at this point
 
+	// Mini Shader ID
+	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, miniShaderId));
+	glEnableVertexAttribArray(pointerPosition);
+	pointerPosition++;
+
 	// Texture Group ID
 	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, textureGroupId));
 	glEnableVertexAttribArray(pointerPosition);
@@ -386,8 +391,6 @@ void RendererCore::SetVAttr_AMDWindows(DrawCall& d)
 	glVertexAttribPointer(pointerPosition, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
-
-	// TODO: Add Mini Shaders
 
 	glBindVertexArray(0);
 }
