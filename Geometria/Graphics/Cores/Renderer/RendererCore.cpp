@@ -372,13 +372,13 @@ void RendererCore::SetVAttr_AMDWindows(DrawCall& d)
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
-	// Mini Shader ID
-	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, miniShaderId));
+	// Color
+	glVertexAttribPointer(pointerPosition, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
-	// Color
-	glVertexAttribPointer(pointerPosition, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+	// Mini Shader ID
+	glVertexAttribPointer(pointerPosition, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, miniShaderId));
 	glEnableVertexAttribArray(pointerPosition);
 	pointerPosition++;
 
