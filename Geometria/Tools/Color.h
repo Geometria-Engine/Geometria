@@ -129,7 +129,7 @@ struct Color
 		return Color(ClampRange(c.r, _min, _max), ClampRange(c.g, _min, _max), ClampRange(c.b, _min, _max), ClampRange(c.a, _min, _max));
 	}
 
-	Color HSVtoRGB(float h, float s, float v, float a = 1.f){
+	static Color HSVtoRGB(float h, float s, float v, float a = 1.f){
 		h = ClampRange(h, 0.f, 360.f);
 		s = ClampRange(s, 0.f, 1.f);
 		v = ClampRange(v, 0.f, 1.f);
@@ -153,7 +153,7 @@ struct Color
 		return Color(rgb[0]/255.f, rgb[1]/255.f, rgb[2]/255.f, a);
 	}
 
-	float * RGBtoHSV(Color c){
+	static float * RGBtoHSV(Color c){
 		float *hsv = new float[3];
 		float cmax = std::max(c.r, std::max(c.g, c.b));
 		float cmin = std::min(c.r, std::min(c.g, c.b));
@@ -171,6 +171,19 @@ struct Color
 		hsv[2] = cmax; //Bruh...
 
 		return hsv;
+	}
+
+	static Color HexToRGB(int hexValue, float a = 1.f)
+	{
+		// Code from https://stackoverflow.com/questions/3723846/convert-from-hex-color-to-rgb-struct-in-c
+
+		Color rgbColor;
+		rgbColor.r = ((hexValue >> 16) & 0xFF) / 255.0;  // Extract the RR byte
+  		rgbColor.g = ((hexValue >> 8) & 0xFF) / 255.0;   // Extract the GG byte
+  		rgbColor.b = ((hexValue) & 0xFF) / 255.0;        // Extract the BB byte
+  		rgbColor.a = a;
+
+  		return rgbColor;
 	}
 };
 
