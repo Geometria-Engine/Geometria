@@ -9,6 +9,23 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+struct ShaderAttrLocation
+{
+	int location;
+	std::string attribute;
+
+	ShaderAttrLocation()
+	{
+
+	}
+
+	ShaderAttrLocation(int loc, std::string attr)
+	{
+		location = loc;
+		attribute = attr;
+	}
+};
+
 class Shader
 {
 private:
@@ -47,9 +64,17 @@ private:
 public:
 
 	Shader(std::string vertexContent, std::string fragmentContent);
+	Shader(std::string vertexContent, std::string fragmentContent, std::vector<ShaderAttrLocation> shaderAttrLocations);
 	void ReportShaderError(GLuint& shader, const char* title);
 
 	GLint OGL_GetUniformLocation(const GLchar* name);
+
+	std::vector<ShaderAttrLocation> attrLocations;
+
+	void AddAttributeLocation(ShaderAttrLocation s)
+	{
+		attrLocations.push_back(s);
+	}
 	//==[ OPENGL ]==//
 #pragma endregion
 

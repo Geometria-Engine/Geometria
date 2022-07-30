@@ -12,6 +12,19 @@ Shader::Shader(std::string vertexContent, std::string fragmentContent)
 	}
 }
 
+Shader::Shader(std::string vertexContent, std::string fragmentContent, std::vector<ShaderAttrLocation> shaderAttrLocations)
+{
+	//==[ OPENGL ]==//
+	{
+		OpenGLVertexShader() = &vertexContent[0];
+		OpenGLFragmentShader() = &fragmentContent[0];
+
+		attrLocations = shaderAttrLocations;
+
+		OpenGLShaderID() = LoadShader();
+	}
+}
+
 int Shader::LoadShader()
 {
 	compilationFailed = false;
@@ -74,6 +87,11 @@ void Shader::FinalTouches()
 {
 	//==[ OPENGL ]==//
 	{
+		for(auto i : attrLocations)
+		{
+			glBindAttribLocation(OpenGLProgram, i.location, i.attribute.c_str());
+		}
+
 		glAttachShader(OpenGLProgram, OGL_VertexShader);
 		glAttachShader(OpenGLProgram, OGL_FragmentShader);
 

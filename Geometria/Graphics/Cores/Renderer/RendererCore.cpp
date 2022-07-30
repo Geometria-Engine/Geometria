@@ -270,9 +270,17 @@ void RendererCore::OpenGL_Start_DrawCall(DrawCall& d)
 		std::cout << "Starting Draw Call " << d.id << " (OpenGL Version: " << glGetString(GL_VERSION) << ")" << std::endl;
 		SetUpWorldMatrix(d);
 
+		std::vector<ShaderAttrLocation> s;
+		s.push_back(ShaderAttrLocation(0, "vertex_position"));
+		s.push_back(ShaderAttrLocation(1, "vertex_color"));
+		s.push_back(ShaderAttrLocation(2, "miniShaderId"));
+		s.push_back(ShaderAttrLocation(3, "vertex_uv"));
+		s.push_back(ShaderAttrLocation(4, "textureIndex"));
+
 		d.mainShader = new Shader(
 			MiniShader::RewriteForShaderVersion(Files::Read("EngineResources/basic.vert"), 1.30f, false),
-			MiniShader::RewriteForShaderVersion(Files::Read("EngineResources/basic.frag"), 1.30f, true));
+			MiniShader::RewriteForShaderVersion(Files::Read("EngineResources/basic.frag"), 1.30f, true),
+			s);
 
 		uint32_t indSize = 600000;
 		d.allIndices.resize(indSize);
@@ -304,19 +312,19 @@ void RendererCore::OpenGL_Start_DrawCall(DrawCall& d)
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, d.allIndices.size() * sizeof(uint32_t), &d.allIndices[0], GL_DYNAMIC_DRAW);
 		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 
-		if (Application::IsPlatform(Application::Platform::Windows))
-		{
-			if (Graphics::IsIntelGPU())
-				SetVAttr_IntelWindows(d);
-			else if (Graphics::IsAMDGPU())
-				SetVAttr_AMDWindows(d);
-			else
-				SetVAttr_Universal(d);
-		}
-		else
-		{
+		//if (Application::IsPlatform(Application::Platform::Windows))
+		//{
+		//	if (Graphics::IsIntelGPU())
+		//		SetVAttr_IntelWindows(d);
+		//	else if (Graphics::IsAMDGPU())
+		//		SetVAttr_AMDWindows(d);
+		//	else
+		//		SetVAttr_Universal(d);
+		//}
+		//else
+		//{
 			SetVAttr_Universal(d);
-		}
+		//}
 	}
 
 	if (d.type == DrawCall::Type::UI)
