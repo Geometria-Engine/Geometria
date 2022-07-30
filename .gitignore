@@ -257,6 +257,7 @@ paket-files/
 # Executables
 *.exe
 !premake5-windows.exe
+!geo.exe
 
 # RenderDoc Captures
 *.rdc
