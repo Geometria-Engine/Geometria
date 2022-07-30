@@ -305,11 +305,11 @@ void RendererCore::OpenGL_Start_DrawCall(DrawCall& d)
 		glBindVertexArray(d.VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, d.VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex), NULL, GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex), NULL, GL_DYNAMIC_DRAW);
 		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d.EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, d.allIndices.size() * sizeof(uint32_t), &d.allIndices[0], GL_STREAM_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, d.allIndices.size() * sizeof(uint32_t), &d.allIndices[0], GL_DYNAMIC_DRAW);
 		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 
 		//if (Application::IsPlatform(Application::Platform::Windows))
@@ -925,7 +925,7 @@ void RendererCore::OpenGL_Render()
 					{
 						if (d.type == DrawCall::Type::Dynamic || d.type == DrawCall::Type::UI)
 						{
-							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), NULL, GL_STREAM_DRAW);
+							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), NULL, GL_DYNAMIC_DRAW);
 							d.bufferPointer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 							d._lastVertCount = d.allVerts.size();
 
@@ -934,7 +934,7 @@ void RendererCore::OpenGL_Render()
 						}
 						else if (d.type == DrawCall::Type::Hybrid || d.type == DrawCall::Type::Object)
 						{
-							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), d.allVerts.data(), GL_STREAM_DRAW);
+							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), d.allVerts.data(), GL_DYNAMIC_DRAW);
 							d._lastVertCount = d.allVerts.size();
 						}
 
