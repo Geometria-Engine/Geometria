@@ -925,12 +925,13 @@ void RendererCore::OpenGL_Render()
 					{
 						if (d.type == DrawCall::Type::Dynamic || d.type == DrawCall::Type::UI)
 						{
-							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), NULL, GL_DYNAMIC_DRAW);
-							d.bufferPointer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), d.allVerts.data(), GL_DYNAMIC_DRAW);
+							//glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), NULL, GL_DYNAMIC_DRAW);
+							//d.bufferPointer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 							d._lastVertCount = d.allVerts.size();
 
-							memcpy(d.bufferPointer, &d.allVerts[0], d.allVerts.size() * sizeof(Vertex));
-							glUnmapBuffer(GL_ARRAY_BUFFER);
+							//memcpy(d.bufferPointer, &d.allVerts[0], d.allVerts.size() * sizeof(Vertex));
+							//glUnmapBuffer(GL_ARRAY_BUFFER);
 						}
 						else if (d.type == DrawCall::Type::Hybrid || d.type == DrawCall::Type::Object)
 						{
@@ -944,15 +945,25 @@ void RendererCore::OpenGL_Render()
 					{
 						if (d.type == DrawCall::Type::Dynamic || d.type == DrawCall::Type::UI)
 						{
+							std::vector<Vertex> modifiedVerts;
+
 							int vertSize = d.modifyVerticesArray.size();
 							if (vertSize != 0)
 							{
 								for (int m = 0; m < vertSize; m++)
 								{
 									for (int i = d.modifyVerticesArray[m][0]; i < d.modifyVerticesArray[m][1]; i++)
-										d.bufferPointer[i] = d.allVerts[i];
+									{
+										modifiedVerts.push_back(d.allVerts[i]);
+										//d.bufferPointer[i] = d.allVerts[i];
+									}
+
+									glBufferSubData(GL_ARRAY_BUFFER, d.modifyVerticesArray[m][0] * sizeof(Vertex), (d.modifyVerticesArray[m][1] - d.modifyVerticesArray[m][0]) * sizeof(Vertex), modifiedVerts.data());
 								}
 							}
+							//std::cout << "=============" << std::endl;
+							//std::cout << d.allVerts.data() << std::endl;
+							//std::cout << "=============" << std::endl;
 						}
 						else if (d.type == DrawCall::Type::Hybrid && d.updateHybrid == true)
 						{
