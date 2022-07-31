@@ -1,9 +1,9 @@
 #include "GUIML.h"
-#include "Files\Files.h"
-#include "String\StringAPI.h"
+#include "Files/Files.h"
+#include "String/StringAPI.h"
 #include "Graphics/Cores/MainAPI/Graphics.h"
-#include <Broadcast\Broadcast.h>
-#include <Web\Web.h>
+#include <Broadcast/Broadcast.h>
+#include <Web/Web.h>
 
 std::vector<GUIML::GUIMLCSSStyle> GUIML::_currentCSSStyles;
 std::vector<GUIML::GUIMLCSSFont> GUIML::_currentCSSFonts;

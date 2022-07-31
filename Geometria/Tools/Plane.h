@@ -54,14 +54,12 @@ struct Plane
         return distanceFromOrigin;
     }
 
-    bool GetIntersection(Plane& a, Plane& b, glm::vec3& out_Vector)
+    bool GetIntersection(Plane& a, Plane& b, const glm::vec3& out_Vector)
     {
         float d = glm::dot(GetNormal(), glm::cross(a.GetNormal(), b.GetNormal()));
     
         if (std::fabs(d) < Math::EpsilonDouble()) return false;
-    
-        out_Vector =
-            (
+        out_Vector = (
                 (glm::cross(a.GetNormal(), b.GetNormal()) * -GetDistance()) -
                 (glm::cross(b.GetNormal(), GetNormal()) * a.GetDistance()) -
                 (glm::cross(GetNormal(), a.GetNormal()) * b.GetDistance())
