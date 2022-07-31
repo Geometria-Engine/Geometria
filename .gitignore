@@ -261,3 +261,7 @@ paket-files/
 
 # RenderDoc Captures
 *.rdc
+
+# Makefiles
+Makefile
+**/Makefile
