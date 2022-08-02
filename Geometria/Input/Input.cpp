@@ -73,7 +73,7 @@ bool Input::GetMouseButtonDown(unsigned int button)
 
     if (Graphics::GetMainWindow().mouse[button] && Graphics::GetMainWindow().mouseState[button] == 0)
     {
-        Graphics::GetMainWindow().mouseState[button]++;
+        Graphics::GetMainWindow().mouseState[button] += 1;
         Input::checkMouseButtons.push_back(button);
     }
     else

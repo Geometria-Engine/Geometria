@@ -2,7 +2,7 @@
 #include "../../../Files/Files.h"
 #include <algorithm>
 #include "Files/XML/pugixml.hpp"
-#include <String\StringAPI.h>
+#include <String/StringAPI.h>
 
 std::vector<TextureGroup> TextureManager::textureGroups;
 

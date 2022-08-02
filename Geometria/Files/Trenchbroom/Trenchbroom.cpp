@@ -144,8 +144,8 @@ Model* Trenchbroom::MAPToModel()
                 	n1n2 *= -p3.GetDistance();
                 	Vector3 potentialVertex = n2n3 + n3n1 + n1n2;
                 	potentialVertex *= quotient;
-
-                	if (!Plane::IsVectorInsidePlanes(b.faces, glm::vec3(potentialVertex.x, potentialVertex.y, potentialVertex.z)))
+									glm::vec3 tmp(potentialVertex.x, potentialVertex.y, potentialVertex.z);
+                	if (!Plane::IsVectorInsidePlanes(b.faces, tmp))
                     	continue;
 
                     std::array<float, 4> ye;

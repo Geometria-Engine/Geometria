@@ -135,7 +135,8 @@ Vector3 ScreenToWorldDirection(Matrix proj, Matrix view, Vector2 screen)
 	//std::cout << "Width: " << Graphics::GetMainWindow().width << " || Height: " << Graphics::GetMainWindow().height << "\n";
 
 	Vector2 screenNdc = Vector2(x, y);
-	Vector3 world = Matrix::Inverse(proj * modifiedView) * Vector4(
+	Matrix modified_proj = proj * modifiedView;
+	Vector3 world = Matrix::Inverse(modified_proj) * Vector4(
 		screenNdc.x, -screenNdc.y, -1.0f, -1.0f);
 
 	return world;

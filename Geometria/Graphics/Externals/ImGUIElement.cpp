@@ -126,7 +126,8 @@ void ImGUIElement::SetCurrentSizeToScreenSize(bool setX, bool setY)
 
 void ImGUIElement::SetCurrentPosToAlignPivot()
 {
-	if (alignPivot == Vector2(-1, -1))
+	Vector2 all_negative(-1, -1);
+	if (alignPivot == all_negative)
 	{
 		ForceAlignToCustom();
 
@@ -582,8 +583,8 @@ void ImGUIElement::OnUpdate()
 		case BottomRight:
 			alignPivot = Vector2(1.0, 1.0);
 		}
-
-		if (guiType != GUIType::Window && alignPivot != Vector2(-1, -1))
+		Vector2 all_negative(-1, -1);
+		if (guiType != GUIType::Window && alignPivot != all_negative)
 		{
 			float font_size_x = 0;
 
@@ -678,7 +679,7 @@ void ImGUIElement::OnUpdate()
 
 		ImGuiWindowFlags window_flags = 0;
 
-		if (lastPosition != Vector2(-1, -1) && lastSize != Vector2(-1, -1))
+		if (lastPosition != all_negative && lastSize != all_negative)
 		{
 			if (boxShadow != nullptr)
 				RenderBoxShadow();
@@ -724,7 +725,7 @@ void ImGUIElement::OnUpdate()
 				alignH = Graphics::GetMainWindow().height * alignPivot.y - (size.y / 2) + (localScreenPosition.y * Graphics::GetMainWindow().height);
 			}
 
-			if (alignPivot != Vector2(-1, -1))
+			if (alignPivot != all_negative)
 			{
 				Move(Vector2(
 					alignW,
