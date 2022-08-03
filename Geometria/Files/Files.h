@@ -42,8 +42,12 @@ struct Files
 	static int UnZIP(const char* url);
 
 	static void CreateDirectory(const char* url);
+	static void CopyDirectory(const char* url, const char* dest);
+	static void DeleteDirectory(const char* url);
 	static bool DirectoryExists(const char* url);
 	static std::string GetDirectoryOf(const char* file);
+
+	static std::string GetGamePath();
 
 	static std::string WhereIs(std::string name);
 

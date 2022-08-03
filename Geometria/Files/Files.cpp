@@ -192,10 +192,26 @@ void Files::CreateDirectory(const char* url)
     std::experimental::filesystem::create_directories(url);
 }
 
+void Files::CopyDirectory(const char* url, const char* dest)
+{
+    DeleteDirectory(dest);
+    std::experimental::filesystem::copy(url, dest, std::experimental::filesystem::copy_options::recursive);
+}
+
+void Files::DeleteDirectory(const char* url)
+{
+    std::experimental::filesystem::remove_all(url);
+}
+
 bool Files::DirectoryExists(const char* url)
 {
     std::experimental::filesystem::path urlPath(url);
     return std::experimental::filesystem::exists(urlPath);
+}
+
+std::string Files::GetGamePath()
+{
+    return Files::GetDirectoryOf(Files::GetExecutablePath().c_str()) + "/Game";
 }
 
 int Files::UnZIP(const char* zipUrl)
