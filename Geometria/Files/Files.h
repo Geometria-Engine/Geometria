@@ -46,6 +46,7 @@ struct Files
 	static void DeleteDirectory(const char* url);
 	static bool DirectoryExists(const char* url);
 	static std::string GetDirectoryOf(const char* file);
+	static std::string GetFilenameFromDirectory(const char* dir);
 
 	static std::string GetGamePath();
 

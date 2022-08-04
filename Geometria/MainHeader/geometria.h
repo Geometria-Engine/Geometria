@@ -26,3 +26,6 @@
 #define FALSE 0
 #endif
 #endif
+
+// Toolkit Macros
+#define DONT_UPDATE_FILE()

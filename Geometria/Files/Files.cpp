@@ -335,6 +335,12 @@ std::string Files::GetDirectoryOf(const char* file)
     return(fileToString.substr(0, found));
 }
 
+std::string Files::GetFilenameFromDirectory(const char* dir)
+{
+    std::string dirString = dir;
+    return dirString.substr(dirString.find_last_of("/\\") + 1);
+}
+
 std::string Files::WhereIs(std::string name)
 {
     std::string result;
