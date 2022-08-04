@@ -23,8 +23,11 @@ struct Files
 	static std::string Read(const char* url, bool isBinary);
 	static std::vector<std::string> ReadAndGetLines(const char* url);
 	static std::string Write(const char* url, std::string content);
+	static std::string Write(const char* url, std::string content, bool isBinary);
 	static std::string Replace(const char* oldFile, const char* newFile, bool isBinary);
 	static std::string Replace(const char* oldFile, const char* newFile);
+	static bool Rename(const char* oldFile, const char* newFile);
+
 	static std::string OpenImage(const char* url, int& width, int& height);
 
 	static std::vector<std::string> OpenTexturePack(const char* gtxp);

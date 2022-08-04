@@ -68,7 +68,18 @@ std::vector<std::string> Files::ReadAndGetLines(const char* url)
 
 std::string Files::Write(const char* url, std::string content)
 {
-    std::ofstream file(url);
+    return Files::Write(url, content, false);
+}
+
+std::string Files::Write(const char* url, std::string content, bool isBinary)
+{
+    std::ofstream file;
+
+    if(isBinary)
+        file = std::ofstream(url, std::ios::binary);
+    else
+        file = std::ofstream(url);
+
     file << content;
     file.close();
 
@@ -89,6 +100,11 @@ std::string Files::Replace(const char* oldFile, const char* newFile, bool isBina
 
     //Files::Remove(oldFile);
     return Files::Write(oldFile, newFileContent);
+}
+
+bool Files::Rename(const char* oldFile, const char* newFile)
+{
+    return std::rename(oldFile, newFile) == 0;
 }
 
 std::string Files::OpenImage(const char* url, int& width, int& height)
