@@ -1,7 +1,6 @@
 #include "Files.h"
 #include "Image/lodepng.h"
 #include "Scene/SceneFile.h"
-#include "nlohmann/json.hpp"
 #include <experimental/filesystem>
 #include <cstdio>
 #include <memory>
@@ -12,6 +11,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 #include <direct.h>
+#include <fileapi.h>
 #define POPEN _popen
 #define PCLOSE _pclose
 #endif
@@ -355,6 +355,31 @@ std::string Files::GetFilenameFromDirectory(const char* dir)
 {
     std::string dirString = dir;
     return dirString.substr(dirString.find_last_of("/\\") + 1);
+}
+
+std::vector<std::string> Files::GetListOfDrives()
+{
+    std::vector<std::string> driveList;
+
+#ifdef _WIN32
+    DWORD dwSize = MAX_PATH;
+    WCHAR szLogicalDrives[MAX_PATH] = { 0 };
+    DWORD dwResult = GetLogicalDriveStrings(dwSize, szLogicalDrives);
+
+    if (dwResult > 0 && dwResult <= MAX_PATH)
+    {
+        WCHAR* szSingleDrive = szLogicalDrives;
+        while (*szSingleDrive)
+        {
+            driveList.push_back(std::string((char*)szSingleDrive) + ":");
+
+            // get the next drive
+            szSingleDrive += wcslen(szSingleDrive) + 1;
+        }
+    }
+#endif
+
+    return driveList;
 }
 
 std::string Files::WhereIs(std::string name)

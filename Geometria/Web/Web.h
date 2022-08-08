@@ -10,5 +10,6 @@ class Web
 {
 public:
 	static std::string Get(const char* urlLink, bool printProgress);
+	static std::string Get(const char* urlLink, bool printProgress, std::vector<std::string> headers);
 	static std::string Post(const char* urlLink, const char* params);
 };

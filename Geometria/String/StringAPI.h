@@ -14,5 +14,9 @@ struct StringAPI
 	static std::vector<std::string> GetLinesFromString(std::string s);
 	static bool StartsWith(std::string string, std::string starts);
 	static bool EndsWith(std::string string, std::string ends);
+	static bool IsOnlyDigits(const std::string &str)
+	{
+	    return str.find_first_not_of("0123456789") == std::string::npos;
+	}
 };
 #endif

@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "nlohmann/json.hpp"
 #include "Trenchbroom/Trenchbroom.h"
 
 #ifdef _WIN32
@@ -50,6 +51,8 @@ struct Files
 	static bool DirectoryExists(const char* url);
 	static std::string GetDirectoryOf(const char* file);
 	static std::string GetFilenameFromDirectory(const char* dir);
+
+	static std::vector<std::string> GetListOfDrives();
 
 	static std::string GetGamePath();
 

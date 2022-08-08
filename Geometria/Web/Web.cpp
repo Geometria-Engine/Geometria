@@ -35,6 +35,12 @@ int progress_func(void* ptr, double TotalToDownload, double NowDownloaded, doubl
 
 std::string Web::Get(const char* urlLink, bool printProgress)
 {
+    std::vector<std::string> empty;
+    return Web::Get(urlLink, printProgress, empty);
+}
+
+std::string Web::Get(const char* urlLink, bool printProgress, std::vector<std::string> headers)
+{
     std::string response_string;
     auto curl = curl_easy_init();
     if (curl) {
@@ -43,6 +49,16 @@ std::string Web::Get(const char* urlLink, bool printProgress)
         curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 50L);
         curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, TRUE);
+
+        if(headers.size() != 0)
+        {
+            struct curl_slist* hData = NULL;
+            
+            for(auto i : headers)
+                hData = curl_slist_append(hData, i.c_str());
+
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hData);
+        }
 
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
 
