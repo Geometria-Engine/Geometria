@@ -70,7 +70,10 @@ void WebRequest::__startRequest(WebForm* form, WebResponse* response) {
 		// Start configuration
 		std::string requestUrl = url;
 		curl_easy_setopt(curl, CURLOPT_MAXREDIRS, (long)maxRedirects);
+#ifdef _WIN32
+		// Gotta fix this...
 		curl_easy_setopt(curl, CURLOPT_MAXLIFETIME_CONN, (long)maxTime);
+#endif
 		curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, TRUE);
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, TRUE);
 		curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, acceptEncoding.c_str());

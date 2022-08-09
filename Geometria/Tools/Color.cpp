@@ -254,22 +254,22 @@ Color Color::operator/=(const float& A) {
 //==================//
 
 //==[ == OPERATOR ]==//
-bool operator==(const Color& l, Vector2& r)
+bool operator==(const Color& l, const Vector2& r)
 {
 	return l.r == r.x && l.g == r.y;
 }
 
-bool operator==(const Color& l, Vector3& r)
+bool operator==(const Color& l, const Vector3& r)
 {
 	return l.r == r.x && l.g == r.y && l.b == r.z;
 }
 
-bool operator==(const Color& l, Vector4& r)
+bool operator==(const Color& l, const Vector4& r)
 {
 	return l.r == r.x && l.g == r.y && l.b == r.z && l.a == r.w;
 }
 
-bool operator==(const Color& l, Color& r)
+bool operator==(const Color& l, const Color& r)
 {
 	return l.r == r.r && l.g == r.g && l.b == r.b && l.a == r.a;
 }
@@ -298,88 +298,88 @@ bool operator!=(const Color& l, const Color& r)
 //====================//
 
 //==[ >= OPERATOR ]==//
-bool operator>=(const Color& l, Vector2& r)
+bool operator>=(const Color& l, const Vector2& r)
 {
 	return l.r >= r.x || l.g >= r.y;
 }
 
-bool operator>=(const Color& l, Vector3& r)
+bool operator>=(const Color& l, const Vector3& r)
 {
 	return l.r >= r.x || l.g >= r.y || l.b >= r.z;
 }
 
-bool operator>=(const Color& l, Vector4& r)
+bool operator>=(const Color& l, const Vector4& r)
 {
 	return l.r >= r.x || l.g >= r.y || l.b >= r.z || l.a >= r.w;
 }
 
-bool operator>=(const Color& l, Color& r)
+bool operator>=(const Color& l, const Color& r)
 {
 	return l.r >= r.r || l.g >= r.g || l.b >= r.b || l.a >= r.a;
 }
 //====================//
 
 //==[ <= OPERATOR ]==//
-bool operator<=(const Color& l, Vector2& r)
+bool operator<=(const Color& l, const Vector2& r)
 {
 	return l.r <= r.x || l.g <= r.y;
 }
 
-bool operator<=(const Color& l, Vector3& r)
+bool operator<=(const Color& l, const Vector3& r)
 {
 	return l.r <= r.x || l.g <= r.y || l.b <= r.z;
 }
 
-bool operator<=(const Color& l, Vector4& r)
+bool operator<=(const Color& l, const Vector4& r)
 {
 	return l.r <= r.x || l.g <= r.y || l.b <= r.z || l.a <= r.w;
 }
 
-bool operator<=(const Color& l, Color& r)
+bool operator<=(const Color& l, const Color& r)
 {
 	return l.r <= r.r || l.g <= r.g || l.b <= r.b || l.a <= r.a;
 }
 //====================//
 
 //==[ > OPERATOR ]==//
-bool operator>(const Color& l, Vector2& r)
+bool operator>(const Color& l, const Vector2& r)
 {
 	return l.r > r.x || l.g > r.y;
 }
 
-bool operator>(const Color& l, Vector3& r)
+bool operator>(const Color& l, const Vector3& r)
 {
 	return l.r > r.x || l.g > r.y || l.b > r.z;
 }
 
-bool operator>(const Color& l, Vector4& r)
+bool operator>(const Color& l, const Vector4& r)
 {
 	return l.r > r.x || l.g > r.y || l.b > r.z || l.a > r.w;
 }
 
-bool operator>(const Color& l, Color& r)
+bool operator>(const Color& l, const Color& r)
 {
 	return l.r > r.r || l.g > r.g || l.b > r.b || l.a > r.a;
 }
 //===================//
 
 //==[ < OPERATOR ]==//
-bool operator<(const Color& l, Vector2& r)
+bool operator<(const Color& l, const Vector2& r)
 {
 	return l.r < r.x || l.g < r.y;
 }
 
-bool operator<(const Color& l, Vector3& r)
+bool operator<(const Color& l, const Vector3& r)
 {
 	return l.r < r.x || l.g < r.y || l.b < r.z;
 }
 
-bool operator<(const Color& l, Vector4& r)
+bool operator<(const Color& l, const Vector4& r)
 {
 	return l.r < r.x || l.g < r.y || l.b < r.z || l.a < r.w;
 }
 
-bool operator<(const Color& l, Color& r)
+bool operator<(const Color& l, const Color& r)
 {
 	return l.r < r.r || l.g < r.g || l.b < r.b || l.a < r.a;
 }

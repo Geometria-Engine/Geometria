@@ -157,7 +157,7 @@ struct Matrix {
 		return result;
 	}
 
-	static Matrix Inverse(Matrix& matrix)
+	static Matrix Inverse(const Matrix& matrix)
 	{
 		Matrix result;
 		result.coreMatrix = glm::inverse(matrix.coreMatrix);
