@@ -496,12 +496,20 @@ std::string Files::GetExecutablePath()
 {
     std::string path;
 
-    // TODO: Add Support For Linux
-
 #ifdef _WIN32
     char buffer[MAX_PATH];
     GetModuleFileNameA(NULL, buffer, MAX_PATH);
     path = std::string(buffer);
+#endif
+#ifdef __linux__
+
+    char self[PATH_MAX] = { 0 };
+    int nchar = readlink("/proc/self/exe", self, sizeof self);
+
+    if (nchar < 0 || nchar >= convert(int, sizeof self))         
+        return nil;
+
+    path = string_utf8(self);
 #endif
 
     return path;
