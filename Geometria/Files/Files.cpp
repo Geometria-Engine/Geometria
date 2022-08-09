@@ -502,14 +502,9 @@ std::string Files::GetExecutablePath()
     path = std::string(buffer);
 #endif
 #ifdef __linux__
-
-    char self[PATH_MAX] = { 0 };
-    int nchar = readlink("/proc/self/exe", self, sizeof self);
-
-    if (nchar < 0 || nchar >= convert(int, sizeof self))         
-        return nil;
-
-    path = string_utf8(self);
+    char result[ PATH_MAX ];
+    ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
+    path = std::string( result, (count > 0) ? count : 0 );
 #endif
 
     return path;
