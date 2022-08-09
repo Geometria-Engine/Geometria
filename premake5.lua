@@ -19,8 +19,10 @@ IncludeDirectories["YAMLCPP"] = "Libraries/YAMLCPP/YAMLCPPCore/include"
 IncludeDirectories["NVIDIAPHYSX"] = "Libraries/NVIDIAPHYSX/include"
 IncludeDirectories["NVIDIAPHYSXSHARED"] = "Libraries/NVIDIAPHYSX/pxshared/include"
 
-include "Libraries/CURL"
-IncludeDirectories["CURL"] = "Libraries/CURL/include"
+if os.istarget("windows") then
+	include "Libraries/CURL"
+	IncludeDirectories["CURL"] = "Libraries/CURL/include"
+end
 
 include "Libraries/ZLIB"
 IncludeDirectories["ZLIB"] = "Libraries/ZLIB"
