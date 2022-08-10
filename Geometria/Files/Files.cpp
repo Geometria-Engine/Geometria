@@ -462,9 +462,13 @@ void Files::ClearConsole()
 void Files::PauseConsole()
 {
     if(Application::IsPlatform(Application::Windows))
+    {
         system("pause");
+    }
     else if(Application::IsPlatform(Application::Linux))
-        system("read -n1 -r -p \"Press any key to continue...\"");
+    {
+	system("echo \"Press Enter to continue...\"; read dummy;");
+    }
 }
 
 std::string Files::ConvertToWindowsCmdPath(std::string path)
