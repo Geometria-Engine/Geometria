@@ -76,6 +76,8 @@ struct Files
 		#endif
 	}
 
+	static void PauseConsole();
+
 	static void ChangeCurrentDirectory(std::string path);
 
 	static std::string ConvertToWindowsCmdPath(std::string path);
