@@ -24,6 +24,8 @@
 
 #undef CreateDirectory
 
+#include "geometria/toolkitmacros.h"
+
 std::string Files::Read(const char* url)
 {
     return Files::Read(url, false);
@@ -205,7 +207,8 @@ bool Files::LoadScene(std::string file)
 
 void Files::CreateDirectory(const char* url)
 {
-    std::experimental::filesystem::create_directories(url);
+    if(!Files::DirectoryExists(url))
+        std::experimental::filesystem::create_directories(url);
 }
 
 void Files::CopyDirectory(const char* url, const char* dest)
@@ -231,6 +234,11 @@ std::string Files::GetGamePath()
 }
 
 int Files::UnZIP(const char* zipUrl)
+{
+    return Files::UnZIP(zipUrl, "");
+}
+
+int Files::UnZIP(const char* zipUrl, std::string discardFolderEx)
 {
     unzFile zipfile = unzOpen(zipUrl);
     if (zipfile == NULL)
@@ -280,6 +288,10 @@ int Files::UnZIP(const char* zipUrl)
         {
             // Entry is a directory, so create it.
             //printf("dir:%s\n", filename);
+
+            if(discardFolderEx != "")
+                fullUrl = StringAPI::RemoveAll(fullUrl, discardFolderEx);
+
             Files::CreateDirectory(fullUrl.c_str());
         }
         else
@@ -294,35 +306,45 @@ int Files::UnZIP(const char* zipUrl)
             }
 
             // Open a file to write out the data.
+
+            if(discardFolderEx != "")
+                fullUrl = StringAPI::RemoveAll(fullUrl, discardFolderEx);
+
+            std::cout << fullUrl << "\n";
+
+            bool ignoreFile = false;
+
             FILE* out = fopen(fullUrl.c_str(), "wb");
             if (out == NULL)
             {
-                printf("could not open destination file\n");
-                unzCloseCurrentFile(zipfile);
-                unzClose(zipfile);
-                return -1;
+                std::cout << "[ERROR]: Could not open destination file (" << fullUrl << "). Ignoring...\n";
+                ignoreFile = true;
             }
 
-            int error = UNZ_OK;
-            do
+            if(!ignoreFile)
             {
-                error = unzReadCurrentFile(zipfile, read_buffer, 8192);
-                if (error < 0)
-                {
-                    printf("error %d\n", error);
-                    unzCloseCurrentFile(zipfile);
-                    unzClose(zipfile);
-                    return -1;
-                }
+                int error = UNZ_OK;
 
-                // Write data to file.
-                if (error > 0)
+                do
                 {
-                    fwrite(read_buffer, error, 1, out); // You should check return of fwrite...
-                }
-            } while (error > 0);
+                    error = unzReadCurrentFile(zipfile, read_buffer, 8192);
+                    if (error < 0)
+                    {
+                        printf("error %d\n", error);
+                        unzCloseCurrentFile(zipfile);
+                        unzClose(zipfile);
+                        return -1;
+                    }
+    
+                    // Write data to file.
+                    if (error > 0)
+                    {
+                        fwrite(read_buffer, error, 1, out); // You should check return of fwrite...
+                    }
+                } while (error > 0);
 
-            fclose(out);
+                fclose(out);
+            }
         }
 
         unzCloseCurrentFile(zipfile);

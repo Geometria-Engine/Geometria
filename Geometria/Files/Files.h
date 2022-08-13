@@ -13,6 +13,8 @@
 #undef CreateDirectory
 #endif
 
+#include "geometria/toolkitmacros.h"
+
 extern "C"
 {
 	#include "Files/ZIP/unzip.h"
@@ -44,6 +46,7 @@ struct Files
 	static std::vector<float> ReadOBJ(const char* url);
 
 	static int UnZIP(const char* url);
+	static int UnZIP(const char* url, std::string discardFolderEx);
 
 	static void CreateDirectory(const char* url);
 	static void CopyDirectory(const char* url, const char* dest);
