@@ -267,3 +267,7 @@ paket-files/
 # Makefiles
 Makefile
 **/Makefile
+
+# Backup Folders
+BackupGame/
+BackupFiles/
