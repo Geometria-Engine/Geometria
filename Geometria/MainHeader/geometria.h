@@ -28,4 +28,4 @@
 #endif
 
 // Toolkit Macros
-#define DONT_UPDATE_FILE()
+#include "geometria/toolkitmacros.h"
