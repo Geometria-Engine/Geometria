@@ -23,6 +23,10 @@ std::string StringAPI::GetSubstringBetween(std::string text, std::string firstT,
 {
 	unsigned first = text.find(firstT);
 	unsigned last = text.find(lastT);
+
+	if(lastT == "")
+		last = text.size() - 1;
+
 	std::string level;
 	if (first != -1 && last != -1)
 	{

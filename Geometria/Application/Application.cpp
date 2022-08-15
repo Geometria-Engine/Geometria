@@ -34,8 +34,23 @@ std::string Application::GetLinuxDistro()
 	std::string catRes = Files::RunCommand("cat /etc/*-release");
 	if(catRes != "")
 	{
-		std::string getName = StringAPI::GetSubstringBetween(catRes, "NAME=\"", "\"");
-		return getName;
+		std::string getName;
+		std::vector<std::string> catLines = StringAPI::SplitIntoVector(catRes, "\n");
+		for(auto i : catLines)
+		{
+			if(StringAPI::StartsWith(i, "NAME="))
+			{
+				getName = i;
+				break;
+			}
+		}
+
+		getName = StringAPI::GetSubstringBetween(getName, "NAME=\"", "");
+
+		if(getName != "")
+			return getName;
+		else
+			return "Unknown";
 	}
 
 	return "Unknown";
