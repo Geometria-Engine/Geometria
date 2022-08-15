@@ -29,6 +29,18 @@ bool Application::IsPlatform(Platform p)
 	return p == currentPlatform;
 }
 
+std::string Application::GetLinuxDistro()
+{
+	std::string catRes = Files::RunCommand("cat /etc/*-release");
+	if(catRes != "")
+	{
+		std::string getName = StringAPI::GetSubstringBetween(catRes, "NAME=\"", "\"");
+		return getName;
+	}
+
+	return "Unknown";
+}
+
 void Application::SetEditor()
 {
 	Application::_engineState = State::Editor;

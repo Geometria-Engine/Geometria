@@ -18,6 +18,8 @@ public:
 		Linux
 	};
 
+	static std::string GetLinuxDistro();
+
 	static State _engineState;
 
 	static bool IsPlatform(Platform p);
