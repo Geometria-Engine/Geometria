@@ -2,6 +2,9 @@
 
 #ifndef APPLICATION_H
 #define APPLICATION_H
+
+#include "String/StringAPI.h"
+
 class Application
 {
 public:
