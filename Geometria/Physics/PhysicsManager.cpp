@@ -61,9 +61,6 @@ void PhysicsManager::OnStart()
 
 void PhysicsManager::OnUpdate()
 {
-	gScene->simulate(Graphics::DeltaTime());
-	gScene->fetchResults(true);
-
 	if (preUpdate)
 	{
 		for (auto i : PhysicsManager::allDynamics)
@@ -79,6 +76,14 @@ void PhysicsManager::OnUpdate()
 		std::cout << PhysicsManager::allDynamics.size() << std::endl;
 
 		preUpdate = false;
+	}
+	else
+	{
+		if(Graphics::DeltaTime() < 0.6f)
+		{
+			gScene->simulate(Graphics::DeltaTime());
+			gScene->fetchResults(true);
+		}
 	}
 }
 
@@ -179,7 +184,18 @@ bool PhysicsManager::Raycast(Vector3 origin, Vector3 direction, int maxDistance,
 	{
 		for (physx::PxU32 i = 0; i < hit.nbTouches; i++)
 		{
-		    buff.hitScripts.push_back(reinterpret_cast<ScriptBehaviour*>(hit.touches[i].actor->userData));
+			ScriptBehaviour* getScript = reinterpret_cast<ScriptBehaviour*>(hit.touches[i].actor->userData);
+
+			if(buff._discardTriggers)
+			{
+				BoxCollider* scriptBC = dynamic_cast<BoxCollider*>(getScript);
+
+				if(scriptBC != nullptr)
+					if(!scriptBC->_isTrigger)
+						buff.hitScripts.push_back(getScript);
+			}
+			else
+		    	buff.hitScripts.push_back(getScript);
 		}
 		return true;
 	}

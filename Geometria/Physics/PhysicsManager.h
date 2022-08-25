@@ -31,8 +31,9 @@ struct RaycastBuffer
 {
 	Vector3 origin, end, direction;
 	int distance;
+	bool _discardTriggers = false;
 	std::vector<ScriptBehaviour*> hitScripts;
-	bool HittedAnythingExcept(ScriptBehaviour* s)
+	bool HitAnythingExcept(ScriptBehaviour* s)
 	{
 		for(int i = 0; i < hitScripts.size(); i++)
 		{
@@ -43,12 +44,17 @@ struct RaycastBuffer
 		return false;
 	}
 
+	void DiscardTriggers(bool b)
+	{
+		_discardTriggers = b;
+	}
+
 	Vector3 GetPoint(float p)
 	{
 		return Vector3(origin.x + direction.x * p, origin.y + direction.y * p, origin.z + direction.z * p);
 	}
 
-	bool HittedAnything()
+	bool HitAnything()
 	{
 		return hitScripts.size() != 0;
 	}
