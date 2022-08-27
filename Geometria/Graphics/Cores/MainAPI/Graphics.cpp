@@ -11,7 +11,7 @@ bool Graphics::_init, Graphics::_close, Graphics::_bypassIntel, Graphics::VSync 
 Window Graphics::_currentWindow;
 int Window::width;
 int Window::height;
-float Graphics::_lastDeltaTime;
+float Graphics::_lastDeltaTime, Graphics::refreshRate = -1;
 int Graphics::_oGLDepthFunction;
 Empty* Graphics::_drawBorderlessWindowManager = nullptr;
 
@@ -53,17 +53,21 @@ void Graphics::Update()
 	//And end it with basic OpenGL stuff, you poll events and swap buffers in order to get the update function going.
 	glfwPollEvents();
 
-//	if (VSync && Application::IsPlatform(Application::Platform::Windows))
-//	{
-#ifdef _WIN32
-		DEVMODE lpDevMode;
-		EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode);
-		//std::cout << lpDevMode.dmDisplayFrequency << std::endl;
-		unsigned int microseconds = (1.0f / lpDevMode.dmDisplayFrequency) * 100000;
+	if (VSync)
+	{
+		if(refreshRate == -1)
+		{
+			#ifdef _WIN32
+				DEVMODE lpDevMode;
+				EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode);
+				refreshRate = lpDevMode.dmDisplayFrequency;
+			#endif
+		}
+
+		unsigned int microseconds = (1.0f / refreshRate) * 100000;
 		auto wait_duration = std::chrono::microseconds(microseconds);
 		std::this_thread::sleep_for(wait_duration);
-#endif
-//	}
+	}
 	
 	//glfwSwapInterval(1);
 }

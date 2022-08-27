@@ -50,6 +50,7 @@ public:
 	static void SetWindowTitle(const char* title);
 	static void SetWindowIcon(const char* icon_path);
 	static bool VSync;
+	static float refreshRate;
 
 	static void SetResolution(Vector2 resolution)
 	{
