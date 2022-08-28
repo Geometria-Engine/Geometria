@@ -86,6 +86,8 @@ project "Geometria"
 			"m",
 			"dl",
 			"stdc++fs",
+			"X11",
+			"Xrandr",
 
 			-- NVIDIA PhysX Libraries --
 			"Libraries/NVIDIAPHYSX/binaries/Linux/PhysX_static_64",

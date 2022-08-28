@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include <chrono>
 #include <thread>
+#include "X11Interface.h"
 
 #include "../../Externals/DragBorderlessWindow.h"
 
@@ -61,6 +62,10 @@ void Graphics::Update()
 				DEVMODE lpDevMode;
 				EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &lpDevMode);
 				refreshRate = lpDevMode.dmDisplayFrequency;
+			#endif
+
+			#ifdef __linux__
+				refreshRate = X11Interface::GetLinuxRefreshRate();
 			#endif
 		}
 
