@@ -15,8 +15,9 @@ public:
 
 	Matrix ViewMatrix, _projectionMatrix, _uiMatrix;
 	bool editorModeCamera = true;
-	Vector3 editorPosition, editorRotation, editorEulerAngles, eulerAngles, right, forward, up, worldUp;
+	Vector3 editorPosition, editorRotation, editorEulerAngles, eulerAngles, _lastEulerAngles, _lastEditorEulerAngles, right, forward, up, worldUp;
 	float movementSpeed, sensitivity;
+	glm::mat4 rollMatrix;
 
 	float fov = 90;
 	float nearPlane = 0.1f, farPlane = 1000.f;

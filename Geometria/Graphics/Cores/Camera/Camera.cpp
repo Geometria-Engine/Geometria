@@ -39,22 +39,58 @@ Camera::Camera(Vector3 position, float fov, float aspect, float near, float far)
 
 void Camera::UpdateCameraSpace()
 {
-	if (!editorModeCamera)
+	bool changedRotation = false;
+
+	if(!editorModeCamera)
 	{
-		forward.x = cos(Math::Radians(eulerAngles.x)) * cos(Math::Radians(eulerAngles.y));
-		forward.y = sin(Math::Radians(eulerAngles.y));
-		forward.z = sin(Math::Radians(eulerAngles.x)) * cos(Math::Radians(eulerAngles.y));
+		if(_lastEulerAngles != eulerAngles)
+		{
+			changedRotation = true;
+			_lastEulerAngles = eulerAngles;
+		}
 	}
 	else
 	{
-		forward.x = cos(Math::Radians(editorEulerAngles.x)) * cos(Math::Radians(editorEulerAngles.y));
-		forward.y = sin(Math::Radians(editorEulerAngles.y));
-		forward.z = sin(Math::Radians(editorEulerAngles.x)) * cos(Math::Radians(editorEulerAngles.y));
+		if(_lastEulerAngles != editorEulerAngles)
+		{
+			changedRotation = true;
+			_lastEulerAngles = editorEulerAngles;
+		}
 	}
 
-	forward = Vector3::Normalize(forward);
-	right = Vector3::Normalize(Vector3::Cross(forward, worldUp));
-	up = Vector3::Normalize(Vector3::Cross(right, forward));
+	if(changedRotation)
+	{
+		if (!editorModeCamera)
+		{
+			forward.x = cos(Math::Radians(eulerAngles.x)) * cos(Math::Radians(eulerAngles.y));
+			forward.y = sin(Math::Radians(eulerAngles.y));
+			forward.z = sin(Math::Radians(eulerAngles.x)) * cos(Math::Radians(eulerAngles.y));
+		}
+		else
+		{
+			forward.x = cos(Math::Radians(editorEulerAngles.x)) * cos(Math::Radians(editorEulerAngles.y));
+			forward.y = sin(Math::Radians(editorEulerAngles.y));
+			forward.z = sin(Math::Radians(editorEulerAngles.x)) * cos(Math::Radians(editorEulerAngles.y));
+		}
+	
+		forward = Vector3::Normalize(forward);
+		right = Vector3::Normalize(Vector3::Cross(forward, worldUp));
+		up = Vector3::Normalize(Vector3::Cross(right, forward));
+	
+		if(!editorModeCamera)
+		{
+			rollMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(eulerAngles.z), glm::vec3(forward.x, forward.y, forward.z));
+		}
+		else
+		{
+			rollMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(editorEulerAngles.z), glm::vec3(forward.x, forward.y, forward.z));
+		}
+	
+		glm::vec3 upGLM = glm::vec3(up.x, up.y, up.z);
+		upGLM = glm::mat3(rollMatrix) * upGLM;
+	
+		up = Vector3(upGLM.x, upGLM.y, upGLM.z);
+	}
 
 	UpdateViewProjection();
 }
