@@ -11,6 +11,7 @@
 #include "../../Externals/SceneAndDrawCall.h"
 #include "../../../Application/Application.h"
 #include "Multithreading/Multithreading.h"
+#include "Graphics/Cores/iGUI/iGUI.h"
 
 
 //uint32_t RendererCore::VAO, RendererCore::VBO, RendererCore::EBO, RendererCore::reveal_texture, RendererCore::rbo_depth, RendererCore::accum_texture, RendererCore::oit_fbo, RendererCore::colorNT_texture;
@@ -176,6 +177,19 @@ void RendererCore::AddImGUIElement(ImGUIElement& i, DrawCall& d)
 	{
 		d.allImGUI.push_back(&i);
 	}
+}
+
+void RendererCore::AddIGUI(iGUI& i)
+{
+	AddIGUI(i, *SceneManager::MainScene().MainDrawCall());
+}
+
+void RendererCore::AddIGUI(iGUI& i, DrawCall& d)
+{
+	i.ownerDrawId = d.id;
+	i.ownerSceneId = d.sceneId;
+
+	d.alliGUI.push_back(&i);
 }
 
 void RendererCore::SetUp()
@@ -889,20 +903,35 @@ void RendererCore::OpenGL_Render()
 
 				if (d.type == DrawCall::Type::UI)
 				{
-					if (d.start > 2 && d.allImGUI.size() != 0)
+					if (d.start > 2)
 					{
-						//TODO: Make it so it is compatible with OpenGL 2 TOO!
-						ImGui_ImplGlfw_NewFrame();
-						ImGui_ImplOpenGL3_NewFrame();
-						ImGui::NewFrame();
-
-						for (int i = 0; i < d.allImGUI.size(); i++)
+						if(d.allImGUI.size() != 0 || d.alliGUI.size() != 0)
 						{
-							d.allImGUI[i]->OnUpdate();
-						}
+							iGUI::GlobalFrameBegin();
 
-						ImGui::Render();
-						ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+							//TODO: Make it so it is compatible with OpenGL 2 TOO!
+							ImGui_ImplGlfw_NewFrame();
+							ImGui_ImplOpenGL3_NewFrame();
+							ImGui::NewFrame();
+
+							if(d.allImGUI.size() != 0)
+							{
+								for (int i = 0; i < d.allImGUI.size(); i++)
+								{
+									d.allImGUI[i]->OnUpdate();
+								}
+							}
+							else if(d.alliGUI.size() != 0)
+							{
+								for (int i = 0; i < d.alliGUI.size(); i++)
+								{
+									d.alliGUI[i]->OnUpdate();
+								}
+							}
+
+							ImGui::Render();
+							ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+						}
 					}
 				}
 

@@ -775,6 +775,8 @@ CODE
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#include <iostream>
+
 #include "imgui.h"
 #ifndef IMGUI_DISABLE
 
@@ -6626,13 +6628,15 @@ void ImGui::FocusTopMostWindowUnderOne(ImGuiWindow* under_this_window, ImGuiWind
 void ImGui::SetCurrentFont(ImFont* font)
 {
     ImGuiContext& g = *GImGui;
-    IM_ASSERT(font && font->IsLoaded());    // Font Atlas not created. Did you call io.Fonts->GetTexDataAsRGBA32 / GetTexDataAsAlpha8 ?
-    IM_ASSERT(font->Scale > 0.0f);
+    //IM_ASSERT(font && font->IsLoaded());    // Font Atlas not created. Did you call io.Fonts->GetTexDataAsRGBA32 / GetTexDataAsAlpha8 ?
+    //IM_ASSERT(font->Scale > 0.0f);
+
     g.Font = font;
     g.FontBaseSize = ImMax(1.0f, g.IO.FontGlobalScale * g.Font->FontSize * g.Font->Scale);
     g.FontSize = g.CurrentWindow ? g.CurrentWindow->CalcFontSize() : 0.0f;
 
     ImFontAtlas* atlas = g.Font->ContainerAtlas;
+
     g.DrawListSharedData.TexUvWhitePixel = atlas->TexUvWhitePixel;
     g.DrawListSharedData.TexUvLines = atlas->TexUvLines;
     g.DrawListSharedData.Font = g.Font;

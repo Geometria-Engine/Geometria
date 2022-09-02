@@ -26,6 +26,9 @@ Index of this file:
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#include <iostream>
+#include <vector>
+
 #include "imgui.h"
 #ifndef IMGUI_DISABLE
 
@@ -2828,23 +2831,68 @@ ImFont* ImFontAtlas::AddFont(const ImFontConfig* font_cfg)
     else
         IM_ASSERT(!Fonts.empty() && "Cannot use MergeMode for the first font"); // When using MergeMode make sure that a font has already been added before. You can use ImGui::GetIO().Fonts->AddFontDefault() to add the default imgui font.
 
-    ConfigData.push_back(*font_cfg);
-    ImFontConfig& new_font_cfg = ConfigData.back();
-    if (new_font_cfg.DstFont == NULL)
-        new_font_cfg.DstFont = Fonts.back();
-    if (!new_font_cfg.FontDataOwnedByAtlas)
+    bool fileNameRepeated = false;
+    ImFontConfig getConfig;
+    for(auto i : ConfigData)
     {
-        new_font_cfg.FontData = IM_ALLOC(new_font_cfg.FontDataSize);
-        new_font_cfg.FontDataOwnedByAtlas = true;
-        memcpy(new_font_cfg.FontData, font_cfg->FontData, (size_t)new_font_cfg.FontDataSize);
+        if(i.FileName == font_cfg->FileName && i.SizePixels == font_cfg->SizePixels && font_cfg->FileName != "")
+        {
+            //std::cout << "FileName repeated!" << std::endl;
+            fileNameRepeated = true;
+            getConfig = i;
+            break;
+        }
     }
 
-    if (new_font_cfg.DstFont->EllipsisChar == (ImWchar)-1)
-        new_font_cfg.DstFont->EllipsisChar = font_cfg->EllipsisChar;
+    ConfigData.push_back(*font_cfg);
+
+    ImFontConfig& new_font_cfg = ConfigData.back();
+
+    if(fileNameRepeated)
+    {
+        new_font_cfg.FontDataOwnedByAtlas = true;
+        new_font_cfg.FontData = getConfig.FontData;
+        new_font_cfg.FontDataSize = getConfig.FontDataSize;
+        new_font_cfg.SizePixels = getConfig.SizePixels;
+        new_font_cfg.DstFont = getConfig.DstFont;
+        new_font_cfg.DstFont->EllipsisChar = getConfig.DstFont->EllipsisChar;
+    }
+
+    if (new_font_cfg.DstFont == NULL)
+        new_font_cfg.DstFont = Fonts.back();
+
+    if(!fileNameRepeated)
+    {
+        if (!new_font_cfg.FontDataOwnedByAtlas)
+        {
+            new_font_cfg.FontData = IM_ALLOC(new_font_cfg.FontDataSize);
+            new_font_cfg.FontDataOwnedByAtlas = true;
+            memcpy(new_font_cfg.FontData, font_cfg->FontData, (size_t)new_font_cfg.FontDataSize);
+        }
+
+        if (new_font_cfg.DstFont->EllipsisChar == (ImWchar)-1)
+            new_font_cfg.DstFont->EllipsisChar = font_cfg->EllipsisChar;
+    }
+    //else
+    //{
+    //    //delete new_font_cfg.FontData;
+    //    //new_font_cfg.FontData = nullptr;
+//
+    //    std::cout << "Copying Data From RAM..." << std::endl;
+    //    if (!new_font_cfg.FontDataOwnedByAtlas)
+    //    {
+    //        new_font_cfg.FontData = getConfig.FontData;
+    //        new_font_cfg.FontDataOwnedByAtlas = true;
+    //    }
+    //}
 
     // Invalidate texture
-    TexReady = false;
-    ClearTexData();
+
+    if(!fileNameRepeated)
+    {
+        TexReady = false;
+        ClearTexData();
+    }
     return new_font_cfg.DstFont;
 }
 
@@ -2889,13 +2937,18 @@ ImFont* ImFontAtlas::AddFontDefault(const ImFontConfig* font_cfg_template)
 ImFont* ImFontAtlas::AddFontFromFileTTF(const char* filename, float size_pixels, const ImFontConfig* font_cfg_template, const ImWchar* glyph_ranges)
 {
     IM_ASSERT(!Locked && "Cannot modify a locked ImFontAtlas between NewFrame() and EndFrame/Render()!");
+
+    void* data = nullptr;
     size_t data_size = 0;
-    void* data = ImFileLoadToMemory(filename, "rb", &data_size, 0);
+
+    data = ImFileLoadToMemory(filename, "rb", &data_size, 0);
+
     if (!data)
     {
         IM_ASSERT_USER_ERROR(0, "Could not load font file!");
         return NULL;
     }
+
     ImFontConfig font_cfg = font_cfg_template ? *font_cfg_template : ImFontConfig();
     if (font_cfg.Name[0] == '\0')
     {
@@ -2913,9 +2966,34 @@ ImFont* ImFontAtlas::AddFontFromMemoryTTF(void* ttf_data, int ttf_size, float si
     IM_ASSERT(!Locked && "Cannot modify a locked ImFontAtlas between NewFrame() and EndFrame/Render()!");
     ImFontConfig font_cfg = font_cfg_template ? *font_cfg_template : ImFontConfig();
     IM_ASSERT(font_cfg.FontData == NULL);
-    font_cfg.FontData = ttf_data;
-    font_cfg.FontDataSize = ttf_size;
+
     font_cfg.SizePixels = size_pixels > 0.0f ? size_pixels : font_cfg.SizePixels;
+
+    bool repeated = false;
+    ImFontConfig getConfig;
+    for(auto i : ConfigData)
+    {
+        if(i.FileName == font_cfg.FileName && i.SizePixels == font_cfg.SizePixels)
+        {
+            getConfig = i;
+            repeated = true;
+            break;
+        }
+    }
+
+    if(!repeated)
+    {
+        font_cfg.FontData = ttf_data;
+        font_cfg.FontDataSize = ttf_size;
+    }
+    //else
+    //{
+    //    font_cfg.FontData = getConfig.FontData;
+    //    font_cfg.FontDataSize = getConfig.FontDataSize;
+    //    delete ttf_data;
+    //    ttf_data = nullptr;
+    //}
+
     if (glyph_ranges)
         font_cfg.GlyphRanges = glyph_ranges;
     return AddFont(&font_cfg);
@@ -3113,7 +3191,7 @@ static bool ImFontAtlasBuildWithStbTruetype(ImFontAtlas* atlas)
         ImFontBuildSrcData& src_tmp = src_tmp_array[src_i];
         ImFontConfig& cfg = atlas->ConfigData[src_i];
         IM_ASSERT(cfg.DstFont && (!cfg.DstFont->IsLoaded() || cfg.DstFont->ContainerAtlas == atlas));
-
+            
         // Find index from cfg.DstFont (we allow the user to set cfg.DstFont. Also it makes casual debugging nicer than when storing indices)
         src_tmp.DstIndex = -1;
         for (int output_i = 0; output_i < atlas->Fonts.Size && src_tmp.DstIndex == -1; output_i++)
@@ -3124,12 +3202,13 @@ static bool ImFontAtlasBuildWithStbTruetype(ImFontAtlas* atlas)
             IM_ASSERT(src_tmp.DstIndex != -1); // cfg.DstFont not pointing within atlas->Fonts[] array?
             return false;
         }
+
         // Initialize helper structure for font loading and verify that the TTF/OTF data is correct
         const int font_offset = stbtt_GetFontOffsetForIndex((unsigned char*)cfg.FontData, cfg.FontNo);
         IM_ASSERT(font_offset >= 0 && "FontData is incorrect, or FontNo cannot be found.");
         if (!stbtt_InitFont(&src_tmp.FontInfo, (unsigned char*)cfg.FontData, font_offset))
             return false;
-
+    
         // Measure highest codepoints
         ImFontBuildDstData& dst_tmp = dst_tmp_array[src_tmp.DstIndex];
         src_tmp.SrcRanges = cfg.GlyphRanges ? cfg.GlyphRanges : atlas->GetGlyphRangesDefault();

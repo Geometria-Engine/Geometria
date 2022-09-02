@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SCENE_AND_DRAW_CALL_H
+#define SCENE_AND_DRAW_CALL_H
+
 #include <vector>
 #include "ImGUIElement.h"
 
@@ -8,6 +10,7 @@ struct ScriptBehaviour;
 struct Vertex;
 class Shader;
 class Model;
+struct iGUI;
 
 class DrawCall : public ScriptBehaviour
 {
@@ -67,6 +70,7 @@ public:
 
 	std::vector<Model*> allModels;
 	std::vector<ImGUIElement*> allImGUI;
+	std::vector<iGUI*> alliGUI;
 	std::vector<Vertex> allVerts;
 	std::vector<uint32_t> allIndices;
 
@@ -168,3 +172,5 @@ public:
 		return _allScenes[_allScenes.size() - 1];
 	}
 };
+
+#endif
