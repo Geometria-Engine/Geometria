@@ -10,6 +10,7 @@ struct iText : public iGUI
 	iText(iGUI& owner, std::string text)
 	{
 		owner.allElements.push_back(this);
+		this->owner = &owner;
 		this->text = text;
 	}
 

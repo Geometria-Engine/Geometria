@@ -4,6 +4,7 @@
 #include "iFont/iFont.h"
 #include <vector>
 #include "Tools/Vector.h"
+#include "Tools/Color.h"
 
 struct iStyle;
 
@@ -11,6 +12,45 @@ struct iStyleManager
 {
 	static std::vector<iStyle*> allStyles;
 	static std::vector<iFont*> allFonts;
+};
+
+struct iStyle_Border
+{
+	Color _borderColor = Color(-1, -1, -1, -1);
+	int _borderSize = 0;
+	int _radiusSize = 0;
+
+	Color& MainColor()
+	{
+		return _borderColor;
+	}
+
+	int& Size()
+	{
+		return _borderSize;
+	}
+
+	int& Radius()
+	{
+		return _radiusSize;
+	}
+};
+
+struct iGradient
+{
+	std::vector<std::pair<Color, float>> gradients;
+
+	std::pair<Color, float> Add(Color col, float f)
+	{
+		gradients.push_back(std::make_pair(col, f));
+		return gradients.back();
+	}
+
+	void Clear()
+	{
+		gradients.clear();
+		std::vector<std::pair<Color, float>>().swap(gradients);
+	}
 };
 
 struct iStyle_Window
@@ -24,6 +64,8 @@ struct iStyle_Window
 	Vector2 _screenPosition = Vector2(-1, -1);
 	Vector2 _screenScale = Vector2(-1, -1);
 
+	iStyle_Border* border = nullptr;
+
 	bool& IsResizable() { return _resize; }
 	bool& ShowTitle() { return _title; }
 	bool& CanScroll() { return _scroll; }
@@ -32,6 +74,9 @@ struct iStyle_Window
 
 	Vector2& ScreenPosition() { return _screenPosition; }
 	Vector2& ScreenScale() { return _screenScale; }
+
+	iStyle_Border*& Border();
+	iStyle_Border*& CurrentBorder();
 };
 
 struct iStyle
@@ -40,6 +85,11 @@ struct iStyle
 	int styleId = -1;
 
 	iStyle_Window* _window = nullptr;
+
+	Color _color = Color(-1, -1, -1, -1);
+	Color _backgroundColor = Color(-1, -1, -1, -1);
+
+	iGradient* _backgroundGradient = nullptr;
 
 	iStyle()
 	{
@@ -52,6 +102,21 @@ struct iStyle
 	iFont*& Font(std::string file);
 
 	iStyle_Window*& Window();
+
+	Color& MainColor()
+	{
+		return _color;
+	}
+
+	Color& BackgroundColor()
+	{
+		return _backgroundColor;
+	}
+
+	iGradient*& BackgroundGradient();
+
+	void UI_PushColors();
+	void UI_PopColors();
 
 	void ImGuiBegin()
 	{

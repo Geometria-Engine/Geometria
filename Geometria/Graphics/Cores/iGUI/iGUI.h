@@ -17,9 +17,12 @@ struct iGUI : public ScriptBehaviour
 	int ownerSceneId;
 	int ownerDrawId;
 
+	iGUI* owner = nullptr;
+
 	iStyle* style = nullptr;
 
 	iStyle* Style();
+	iStyle* CurrentStyle();
 
 	static iStyle* _globalStyle;
 	static bool _globalBegin;
@@ -28,7 +31,7 @@ struct iGUI : public ScriptBehaviour
 
 	static void SetGlobalStyle();
 
-	static iStyle* iGUI::GlobalStyle();
+	static iStyle* GlobalStyle();
 
 	void OnStartup();
 

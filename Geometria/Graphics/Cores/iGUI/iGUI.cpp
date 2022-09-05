@@ -18,7 +18,12 @@ void iGUI::SetGlobalStyle()
 		iGUI::_globalStyle->font->file = "EngineResources/Fonts/Raleway-Regular.ttf";
 		iGUI::_globalStyle->font->size = 20;
 
+		iGUI::_globalStyle->_color = Color::white();
+		iGUI::_globalStyle->_backgroundColor = Color(0, 0, 0, 0.5);
+
 		iGUI::_globalStyle->Window();
+		iGUI::_globalStyle->Window()->Border()->MainColor() = Color(0.5, 0.5, 0.5, 1);
+		iGUI::_globalStyle->Window()->Border()->Size() = 1;
 	}
 }
 
@@ -38,6 +43,14 @@ iStyle* iGUI::Style()
 	}
 
 	return style;
+}
+
+iStyle* iGUI::CurrentStyle()
+{
+	if(style != nullptr)
+		return style;
+
+	return iGUI::GlobalStyle();
 }
 
 void iGUI::GlobalFrameBegin()

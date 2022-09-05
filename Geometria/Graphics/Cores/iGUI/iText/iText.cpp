@@ -2,18 +2,16 @@
 
 void iText::OnUpdate()
 {
-	if(style != nullptr)
-	{
-		style->font->font->Scale = float(style->font->size) / 100.f;
-		ImGui::PushFont(style->font->font);
-	}
-	else
-	{
-		iGUI::GlobalStyle()->font->font->Scale = float(iGUI::GlobalStyle()->font->size) / 100.f;
-		ImGui::PushFont(iGUI::GlobalStyle()->font->font);
-	}
+	iStyle* currentStyle = CurrentStyle();
+
+	currentStyle->UI_PushColors();
+
+	currentStyle->font->font->Scale = float(currentStyle->font->size) / 100.f;
+	ImGui::PushFont(currentStyle->font->font);
 
 	ImGui::Text(text.c_str());
 
 	ImGui::PopFont();
+
+	currentStyle->UI_PopColors();
 }

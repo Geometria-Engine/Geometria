@@ -17,7 +17,11 @@ struct iImGuiDemo : public iGUI
 
 	void OnUpdate()
 	{
+		//CurrentStyle()->UI_PushColors();
+
 		ImGui::ShowDemoWindow();
+
+		//CurrentStyle()->UI_PopColors();
 	}
 };
 

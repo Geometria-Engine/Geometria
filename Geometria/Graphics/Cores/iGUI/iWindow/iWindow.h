@@ -44,7 +44,16 @@ struct iWindow : public iGUI
 	iStyle_Window* GetWindowStyle();
 
 	void UI_SetStyleParams();
+	void UI_PopStyleParams();
+
 	void UI_SetAndGetTransform();
+
+	void UI_RenderBorder(iStyle_Window* windowStyle, bool focused);
+
+	void ShadeVertsLinearColorGradientSetAlpha(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, ImVec2 gradient_p0, ImVec2 gradient_p1, ImU32 col0, ImU32 col1);
+
+	void UI_RenderBackgroundGradient(iStyle_Window* windowStyle);
+
 	void OnStart();
 	void OnUpdate();
 };
