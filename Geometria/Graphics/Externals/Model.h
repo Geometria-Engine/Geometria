@@ -135,6 +135,7 @@ public:
 
 	int modelId = 0;
 	bool isDeleted = false;
+	bool isModelDisabled = false;
 	std::vector<int> indexVertices;
 	std::vector<int> newIndexVertices;
 	std::vector<Vertex*> bufferVertices;

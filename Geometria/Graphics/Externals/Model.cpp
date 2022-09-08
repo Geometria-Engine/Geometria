@@ -213,174 +213,177 @@ void Model::FlipTexture(bool x, bool y)
 
 void Model::OnChange(bool modifyTransform, bool reCheck)
 {
-	//YO
-	/*if (modifyTransform)
-	{*/
-	
-	//if (modifyTransform)
-	//{
-		translationMatrix = Matrix(1.0f);
-		translationMatrix = Matrix::Translate(Vector3(-transform.position.x, -transform.position.y, -transform.position.z));
-
-		rotationMatrix = Matrix::Rotate(Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z + 180.0f));
-
-		finalMatrix = translationMatrix * rotationMatrix * -translationMatrix;
-	//}
-
-	if (indexVertices.size() != 0)
+	if(!isModelDisabled)
 	{
-		DrawCall& d = *RendererCore::FindDrawCall(SceneBelongsTo, DWBelongsTo);
-
-		int texCount = 0;
-		for (int i = 0; i < vertices.size(); i++)
+		//YO
+		/*if (modifyTransform)
+		{*/
+		
+		//if (modifyTransform)
+		//{
+			translationMatrix = Matrix(1.0f);
+			translationMatrix = Matrix::Translate(Vector3(-transform.position.x, -transform.position.y, -transform.position.z));
+	
+			rotationMatrix = Matrix::Rotate(Vector3(transform.rotation.x, transform.rotation.y, transform.rotation.z + 180.0f));
+	
+			finalMatrix = translationMatrix * rotationMatrix * -translationMatrix;
+		//}
+	
+		if (indexVertices.size() != 0)
 		{
-			Vector4 finalPosition;
-			int xmodel = i * 4,
-				ymodel = i * 4 + 1;
-
-			if (d.type != DrawCall::Type::UI) finalPosition = finalMatrix * Vector4(transform.position.x + modelVertexData[xmodel] * transform.scale.x, transform.position.y + modelVertexData[ymodel] * transform.scale.y, transform.position.z, 1.0f);
-			else {
-				// Scale 1:1px
-				Vector2 _corner = Vector2(-RendererCore::WindowWidth() / 2, -RendererCore::WindowHeight() / 2);
-
-				//// Making your life easier
-				//// If an anchor axis equals on min and max, it converts the position, size and pivot to a UI Box
-				//// If not, it use the corresponding UI Box sides
-				if (uitransform.anchors.min.x == uitransform.anchors.max.x) {
-					uitransform.left = uitransform.position.x - (uitransform.pivot.x * uitransform.size.x);
-					uitransform.right = uitransform.position.x + uitransform.size.x;
-				}
-				if (uitransform.anchors.min.y == uitransform.anchors.max.y) {
-					uitransform.bottom = uitransform.position.y - (uitransform.pivot.y * uitransform.size.y);
-					uitransform.top = uitransform.position.y + uitransform.size.y;
-				}
-
-				//// Converting percentage to pixels
-				float widthRatio = ((float)RendererCore::WindowWidth() / (float)d.uiWidth) * ((float)d.uiHeight / (float)RendererCore::WindowHeight());
-				//float heightRatio = 1;
-
-				Vector4 fixedAnchors = Vector4(
-					ClampRange(uitransform.anchors.min.x - 0.5f, -0.5f, uitransform.anchors.max.x - 0.5f) * (float)RendererCore::WindowWidth(),
-					ClampRange(uitransform.anchors.min.y - 0.5f, -0.5f, uitransform.anchors.max.y - 0.5f) * (float)RendererCore::WindowHeight(),
-					ClampRange(uitransform.anchors.max.x - 0.5f, -0.5f, 0.5f) * (float)RendererCore::WindowWidth(),
-					ClampRange(uitransform.anchors.max.y - 0.5f, -0.5f, 0.5f) * (float)RendererCore::WindowHeight()
-				);
-
-				Vector4 fixedBox = Vector4(
-					fixedAnchors.x + uitransform.left,
-					fixedAnchors.y + uitransform.bottom,
-					fixedAnchors.z + uitransform.top,
-					fixedAnchors.w + uitransform.right
-				);
-
-
-				// Now time to convert it to position and scale
-				Vector4 posAndScale = Vector4(
-					fixedBox.x, // position.x
-					fixedBox.y, // position.y
-					fixedBox.w - fixedBox.y, // scale.y
-					fixedBox.z - fixedBox.x // scale.x
-				);
-
-				// Replace this to local variables if you want
-				Vector4 pos = Vector4(posAndScale.x, posAndScale.y, transform.position.z, 1.0f);
-				Vector4 sca = Vector4(fabs(posAndScale.z), fabs(posAndScale.w), transform.scale.z, transform.scale.w);
-
-				//std::cout << pos.x << " | " << pos.y << " | " << sca.x << " | " << sca.y << std::endl;
-				//std::cout << RendererCore::WindowWidth() << " | " << RendererCore::WindowHeight() << " | " << d.uiWidth << " | " << d.uiHeight << std::endl;
-
-				// And that's all
-				finalPosition = finalMatrix * Vector4(pos.x + modelVertexData[xmodel] * sca.x, pos.y + modelVertexData[ymodel] * sca.y, transform.position.z, 1.0f);
-				//std::cout << finalPosition.x << " | " << finalPosition.y << std::endl;
-
-				/*switch (uiPosition) {
-					case Center:
-						finalPosition = finalMatrix * Vector4(position.x + modelVertexData[xmodel] * scale.x, position.y + modelVertexData[ymodel] * scale.y, position.z, 1.0f);
-						break;
-					case Left:
-						Vector3 pos = position;
-
-						// Nacho: Hacelo aca xd
-						// Roboto: Haceme esta XDDDDDDDDDDDDDDDDDDDDDD
-
-						finalPosition = finalMatrix * Vector4(pos.x + modelVertexData[xmodel] * scale.x, position.y + modelVertexData[ymodel] * scale.y, position.z, 1.0f);
-						break;
-				}*/
-			}
-
-			vertices[i].modelId = scriptId;
-			vertices[i].miniShaderId = miniShaderId;
-			vertices[i].color = glm::vec4(color.r, color.g, color.b, color.a);
-			vertices[i].position = glm::vec4(finalPosition.x, finalPosition.y, finalPosition.z, finalPosition.w);
-
-			d.allVerts[indexVertices[i]].modelId = vertices[i].modelId;
-			d.allVerts[indexVertices[i]].color = vertices[i].color;
-			d.allVerts[indexVertices[i]].position = vertices[i].position;
-
-			if (texture != nullptr)
+			DrawCall& d = *RendererCore::FindDrawCall(SceneBelongsTo, DWBelongsTo);
+	
+			int texCount = 0;
+			for (int i = 0; i < vertices.size(); i++)
 			{
-				if (texture->width != 0 || texture->height != 0)
-				{
-					d.allVerts[indexVertices[i]].textureGroupId = texture->texGroupId;
-
-					float x = (float)texture->finalRect.x,
-						y = (float)texture->finalRect.y,
-						width = (float)texture->finalRect.x + (float)texture->finalRect.width,
-						height = (float)texture->finalRect.y + (float)texture->finalRect.height;
-
-					if (flipXTexture)
-						std::swap(x, width);
-
-					if (flipYTexture)
-						std::swap(y, height);
-
-					switch (texCount)
-					{
-					case 0:
-						d.allVerts[indexVertices[i]].texCoords =
-							glm::vec2(x / (float)TextureManager::textureGroups[texture->texGroupId].width,
-								y / (float)TextureManager::textureGroups[texture->texGroupId].height);
-
-						texCount++;
-						break;
-					case 1:
-						d.allVerts[indexVertices[i]].texCoords =
-							glm::vec2(x / (float)TextureManager::textureGroups[texture->texGroupId].width,
-								height / (float)TextureManager::textureGroups[texture->texGroupId].height);
-
-						texCount++;
-						break;
-					case 2:
-
-						d.allVerts[indexVertices[i]].texCoords =
-							glm::vec2(width / (float)TextureManager::textureGroups[texture->texGroupId].width,
-								height / (float)TextureManager::textureGroups[texture->texGroupId].height);
-
-						texCount++;
-						break;
-					case 3:
-						d.allVerts[indexVertices[i]].texCoords =
-							glm::vec2(width / (float)TextureManager::textureGroups[texture->texGroupId].width,
-								y / (float)TextureManager::textureGroups[texture->texGroupId].height);
-
-						texCount = 0;
-						break;
+				Vector4 finalPosition;
+				int xmodel = i * 4,
+					ymodel = i * 4 + 1;
+	
+				if (d.type != DrawCall::Type::UI) finalPosition = finalMatrix * Vector4(transform.position.x + modelVertexData[xmodel] * transform.scale.x, transform.position.y + modelVertexData[ymodel] * transform.scale.y, transform.position.z, 1.0f);
+				else {
+					// Scale 1:1px
+					Vector2 _corner = Vector2(-RendererCore::WindowWidth() / 2, -RendererCore::WindowHeight() / 2);
+	
+					//// Making your life easier
+					//// If an anchor axis equals on min and max, it converts the position, size and pivot to a UI Box
+					//// If not, it use the corresponding UI Box sides
+					if (uitransform.anchors.min.x == uitransform.anchors.max.x) {
+						uitransform.left = uitransform.position.x - (uitransform.pivot.x * uitransform.size.x);
+						uitransform.right = uitransform.position.x + uitransform.size.x;
 					}
+					if (uitransform.anchors.min.y == uitransform.anchors.max.y) {
+						uitransform.bottom = uitransform.position.y - (uitransform.pivot.y * uitransform.size.y);
+						uitransform.top = uitransform.position.y + uitransform.size.y;
+					}
+	
+					//// Converting percentage to pixels
+					float widthRatio = ((float)RendererCore::WindowWidth() / (float)d.uiWidth) * ((float)d.uiHeight / (float)RendererCore::WindowHeight());
+					//float heightRatio = 1;
+	
+					Vector4 fixedAnchors = Vector4(
+						ClampRange(uitransform.anchors.min.x - 0.5f, -0.5f, uitransform.anchors.max.x - 0.5f) * (float)RendererCore::WindowWidth(),
+						ClampRange(uitransform.anchors.min.y - 0.5f, -0.5f, uitransform.anchors.max.y - 0.5f) * (float)RendererCore::WindowHeight(),
+						ClampRange(uitransform.anchors.max.x - 0.5f, -0.5f, 0.5f) * (float)RendererCore::WindowWidth(),
+						ClampRange(uitransform.anchors.max.y - 0.5f, -0.5f, 0.5f) * (float)RendererCore::WindowHeight()
+					);
+	
+					Vector4 fixedBox = Vector4(
+						fixedAnchors.x + uitransform.left,
+						fixedAnchors.y + uitransform.bottom,
+						fixedAnchors.z + uitransform.top,
+						fixedAnchors.w + uitransform.right
+					);
+	
+	
+					// Now time to convert it to position and scale
+					Vector4 posAndScale = Vector4(
+						fixedBox.x, // position.x
+						fixedBox.y, // position.y
+						fixedBox.w - fixedBox.y, // scale.y
+						fixedBox.z - fixedBox.x // scale.x
+					);
+	
+					// Replace this to local variables if you want
+					Vector4 pos = Vector4(posAndScale.x, posAndScale.y, transform.position.z, 1.0f);
+					Vector4 sca = Vector4(fabs(posAndScale.z), fabs(posAndScale.w), transform.scale.z, transform.scale.w);
+	
+					//std::cout << pos.x << " | " << pos.y << " | " << sca.x << " | " << sca.y << std::endl;
+					//std::cout << RendererCore::WindowWidth() << " | " << RendererCore::WindowHeight() << " | " << d.uiWidth << " | " << d.uiHeight << std::endl;
+	
+					// And that's all
+					finalPosition = finalMatrix * Vector4(pos.x + modelVertexData[xmodel] * sca.x, pos.y + modelVertexData[ymodel] * sca.y, transform.position.z, 1.0f);
+					//std::cout << finalPosition.x << " | " << finalPosition.y << std::endl;
+	
+					/*switch (uiPosition) {
+						case Center:
+							finalPosition = finalMatrix * Vector4(position.x + modelVertexData[xmodel] * scale.x, position.y + modelVertexData[ymodel] * scale.y, position.z, 1.0f);
+							break;
+						case Left:
+							Vector3 pos = position;
+	
+							// Nacho: Hacelo aca xd
+							// Roboto: Haceme esta XDDDDDDDDDDDDDDDDDDDDDD
+	
+							finalPosition = finalMatrix * Vector4(pos.x + modelVertexData[xmodel] * scale.x, position.y + modelVertexData[ymodel] * scale.y, position.z, 1.0f);
+							break;
+					}*/
+				}
+	
+				vertices[i].modelId = scriptId;
+				vertices[i].miniShaderId = miniShaderId;
+				vertices[i].color = glm::vec4(color.r, color.g, color.b, color.a);
+				vertices[i].position = glm::vec4(finalPosition.x, finalPosition.y, finalPosition.z, finalPosition.w);
+	
+				d.allVerts[indexVertices[i]].modelId = vertices[i].modelId;
+				d.allVerts[indexVertices[i]].color = vertices[i].color;
+				d.allVerts[indexVertices[i]].position = vertices[i].position;
+	
+				if (texture != nullptr)
+				{
+					if (texture->width != 0 || texture->height != 0)
+					{
+						d.allVerts[indexVertices[i]].textureGroupId = texture->texGroupId;
+	
+						float x = (float)texture->finalRect.x,
+							y = (float)texture->finalRect.y,
+							width = (float)texture->finalRect.x + (float)texture->finalRect.width,
+							height = (float)texture->finalRect.y + (float)texture->finalRect.height;
+	
+						if (flipXTexture)
+							std::swap(x, width);
+	
+						if (flipYTexture)
+							std::swap(y, height);
+	
+						switch (texCount)
+						{
+						case 0:
+							d.allVerts[indexVertices[i]].texCoords =
+								glm::vec2(x / (float)TextureManager::textureGroups[texture->texGroupId].width,
+									y / (float)TextureManager::textureGroups[texture->texGroupId].height);
+	
+							texCount++;
+							break;
+						case 1:
+							d.allVerts[indexVertices[i]].texCoords =
+								glm::vec2(x / (float)TextureManager::textureGroups[texture->texGroupId].width,
+									height / (float)TextureManager::textureGroups[texture->texGroupId].height);
+	
+							texCount++;
+							break;
+						case 2:
+	
+							d.allVerts[indexVertices[i]].texCoords =
+								glm::vec2(width / (float)TextureManager::textureGroups[texture->texGroupId].width,
+									height / (float)TextureManager::textureGroups[texture->texGroupId].height);
+	
+							texCount++;
+							break;
+						case 3:
+							d.allVerts[indexVertices[i]].texCoords =
+								glm::vec2(width / (float)TextureManager::textureGroups[texture->texGroupId].width,
+									y / (float)TextureManager::textureGroups[texture->texGroupId].height);
+	
+							texCount = 0;
+							break;
+						}
+					}
+					else
+					{
+						d.allVerts[indexVertices[i]].textureGroupId = -1;
+					}
+	
+					/*std::cout << "Verts: " << d.allVerts[indexVertices[i]].texCoords.x << " " << d.allVerts[indexVertices[i]].texCoords.y << std::endl;
+					std::cout << "Texture Coords: " << texture->finalRect.x << " " << texture->finalRect.y << std::endl;*/
 				}
 				else
 				{
 					d.allVerts[indexVertices[i]].textureGroupId = -1;
 				}
-
-				/*std::cout << "Verts: " << d.allVerts[indexVertices[i]].texCoords.x << " " << d.allVerts[indexVertices[i]].texCoords.y << std::endl;
-				std::cout << "Texture Coords: " << texture->finalRect.x << " " << texture->finalRect.y << std::endl;*/
+	
+				RendererCore::ModifyVerticesOnBuffer(indexVertices, reCheck, d);
 			}
-			else
-			{
-				d.allVerts[indexVertices[i]].textureGroupId = -1;
-			}
-
-			RendererCore::ModifyVerticesOnBuffer(indexVertices, reCheck, d);
 		}
 	}
 

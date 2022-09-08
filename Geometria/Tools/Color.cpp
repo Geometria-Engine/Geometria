@@ -1,4 +1,5 @@
 #include "../Graphics/Externals/Model.h"
+#include "String/StringAPI.h"
 
 void Color::SendChangeEvent()
 {
@@ -384,3 +385,12 @@ bool operator<(const Color& l, const Color& r)
 	return l.r < r.r || l.g < r.g || l.b < r.b || l.a < r.a;
 }
 //===================//
+
+Color Color::HexToRGB(std::string valueWithSharp, float a)
+{
+	std::string result;
+	if(valueWithSharp.find("#") != std::string::npos)
+		result = StringAPI::ReplaceAll(valueWithSharp, "#", "0x");
+
+	return HexToRGB(std::stoul(result, nullptr, 16), a);
+}

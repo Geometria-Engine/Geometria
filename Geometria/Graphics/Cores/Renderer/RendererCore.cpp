@@ -133,6 +133,29 @@ void RendererCore::AddModel(Model& m, DrawCall& d)
 	//m.PrintData();
 }
 
+void RendererCore::DisableModel(Model& d)
+{
+	if(!d.isModelDisabled)
+	{
+		DrawCall& draw = *RendererCore::FindDrawCall(d.SceneBelongsTo, d.DWBelongsTo);
+		for(int i = 0; i < d.indexVertices.size(); i++)
+		{
+			draw.allVerts[d.indexVertices[i]].position = glm::vec4(0);
+		}
+
+		d.isModelDisabled = true;
+	}
+}
+
+void RendererCore::EnableModel(Model& d)
+{
+	if(d.isModelDisabled)
+	{
+		d.isModelDisabled = false;
+		d.OnChange();
+	}
+}
+
 void RendererCore::UpdateSorting(DrawCall& d)
 {
 	d.updateSorting = true;

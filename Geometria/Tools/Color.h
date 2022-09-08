@@ -172,6 +172,21 @@ struct Color
 
 		return hsv;
 	}
+
+	static Color HexToRGB(int hexValue, float a = 1.f)
+	{
+		// Code from https://stackoverflow.com/questions/3723846/convert-from-hex-color-to-rgb-struct-in-c
+
+		Color rgbColor;
+		rgbColor.r = ((hexValue >> 16) & 0xFF) / 255.0;  // Extract the RR byte
+  		rgbColor.g = ((hexValue >> 8) & 0xFF) / 255.0;   // Extract the GG byte
+  		rgbColor.b = ((hexValue) & 0xFF) / 255.0;        // Extract the BB byte
+  		rgbColor.a = a;
+
+  		return rgbColor;
+	}
+
+	static Color HexToRGB(std::string valueWithSharp, float a = 1.f);
 };
 
 #endif
