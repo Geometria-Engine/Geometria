@@ -18,5 +18,17 @@ struct StringAPI
 	{
 	    return str.find_first_not_of("0123456789") == std::string::npos;
 	}
+	static bool ContainsDigits(const std::string &str)
+	{
+		return str.find_first_of("0123456789") != std::string::npos;
+	}
+	static bool IsOnlyLetters(const std::string &str)
+	{
+	    return str.find_first_not_of("abcdefghijklmnopqrstuvwxyz") == std::string::npos;
+	}
+	static bool ContainsLetters(const std::string &str)
+	{
+		return str.find_first_of("abcdefghijklmnopqrstuvwxyz") != std::string::npos;
+	}
 };
 #endif

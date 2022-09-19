@@ -20,12 +20,20 @@ public:
 	enum Type
 	{
 		Default,
-		Depth
+		DataOnly
 	};
+
+	Texture* Cut(int x, int y, int width, int height);
 
 	Texture();
 	Texture(const char* fileName, Type type);
 	Texture(std::string fileName, Type type);
+
+	Texture(std::string fileName);
+	Texture(const char* fileName);
+
+	void InitTexture(const char* fileName, Type type);
+
 	bool IsLoadedToGPU() { return isLoadedToGPU; }
 	~Texture() {};
 };

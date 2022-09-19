@@ -321,14 +321,16 @@ void Model::OnChange(bool modifyTransform, bool reCheck)
 	
 				if (texture != nullptr)
 				{
+					float x, y, width, height;
+
 					if (texture->width != 0 || texture->height != 0)
 					{
 						d.allVerts[indexVertices[i]].textureGroupId = texture->texGroupId;
-	
-						float x = (float)texture->finalRect.x,
-							y = (float)texture->finalRect.y,
-							width = (float)texture->finalRect.x + (float)texture->finalRect.width,
-							height = (float)texture->finalRect.y + (float)texture->finalRect.height;
+
+						x = (float)texture->finalRect.x;
+						y = (float)texture->finalRect.y;
+						width = (float)texture->finalRect.x + (float)texture->finalRect.width;
+						height = (float)texture->finalRect.y + (float)texture->finalRect.height;
 	
 						if (flipXTexture)
 							std::swap(x, width);

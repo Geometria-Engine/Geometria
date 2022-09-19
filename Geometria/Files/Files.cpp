@@ -418,13 +418,22 @@ std::string Files::WhereIs(std::string name)
 #endif
 
     result = Files::RunCommand(command);
-    result = StringAPI::RemoveAll(result, "\n");
+    
+    std::vector<std::string> files = StringAPI::SplitIntoVector(result, "\n");
 
-    std::ifstream test(result);
-    if (!test)
+    for(auto i : files)
     {
-        std::cout << "The file \"" << command << "\" doesn't exist" << std::endl;
-        return std::string();
+        std::ifstream test(i);
+        if (!test)
+        {
+            std::cout << "The file \"" << command << "\" doesn't exist" << std::endl;
+            return std::string();
+        }
+        else
+        {
+            result = i;
+            break;
+        }
     }
 
     return result;

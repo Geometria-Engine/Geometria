@@ -10,30 +10,38 @@ Texture::Texture() {}
 
 Texture::Texture(const char* fileName, Type type)
 {
-	data = Files::GetImageData(fileName, width, height);
-	filename = fileName;
-
-	if (TextureManager::textureGroups.size() == 0)
-	{
-		TextureManager::textureGroups.push_back(TextureGroup());
-		TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].id = TextureManager::textureGroups.size() - 1;
-	}
-
-	TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].AddTexture(*this);
+	InitTexture(fileName, type);
 }
-
 Texture::Texture(std::string fileName, Type type)
 {
-	data = Files::GetImageData(fileName.c_str(), width, height);
+	InitTexture(fileName.c_str(), type);
+}
+
+Texture::Texture(std::string fileName)
+{
+	InitTexture(fileName.c_str(), Texture::Type::Default);
+}
+Texture::Texture(const char* fileName)
+{
+	InitTexture(fileName, Texture::Type::Default);
+}
+
+void Texture::InitTexture(const char* fileName, Type type)
+{
+	data = Files::GetImageData(fileName, width, height);
 	filename = fileName;
+	this->type = type;
 
-	if (TextureManager::textureGroups.size() == 0)
+	if(type != Texture::Type::DataOnly)
 	{
-		TextureManager::textureGroups.push_back(TextureGroup());
-		TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].id = TextureManager::textureGroups.size() - 1;
-	}
+		if (TextureManager::textureGroups.size() == 0)
+		{
+			TextureManager::textureGroups.push_back(TextureGroup());
+			TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].id = TextureManager::textureGroups.size() - 1;
+		}
 
-	TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].AddTexture(*this);
+		TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].AddTexture(*this);
+	}
 }
 
 void TextureGroup::AddTexture(Texture& tex)
@@ -42,6 +50,43 @@ void TextureGroup::AddTexture(Texture& tex)
 	allTextures[allTextures.size() - 1]->texGroupId = id;
 	
 	Texture& t = *allTextures[allTextures.size() - 1];
+}
+
+Texture* Texture::Cut(int x, int y, int width, int height)
+{
+	Texture* newTexture = new Texture();
+	newTexture->filename = filename + "#Cut";
+	newTexture->width = width;
+	newTexture->height = height;
+
+	for(int h = 0; h < this->height; h++)
+	{
+		if(h < newTexture->height)
+		{
+			for(int w = 0; w < this->width; w++)
+			{
+				unsigned int index = 0;
+				index = (h * this->width + w) * 4;
+				if(w < newTexture->width)
+				{
+					newTexture->data.push_back(this->data[index]);
+					newTexture->data.push_back(this->data[index + 1]);
+					newTexture->data.push_back(this->data[index + 2]);
+					newTexture->data.push_back(this->data[index + 3]);
+				}
+			}
+		}
+	}
+
+	if (TextureManager::textureGroups.size() == 0)
+	{
+		TextureManager::textureGroups.push_back(TextureGroup());
+		TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].id = TextureManager::textureGroups.size() - 1;
+	}
+
+	TextureManager::textureGroups[TextureManager::textureGroups.size() - 1].AddTexture(*newTexture);
+
+	return newTexture;
 }
 
 void TextureGroup::UploadToGPU()
@@ -64,38 +109,41 @@ void TextureGroup::UploadToGPU()
 		int countDone = 0;
 		for (int i = 0; i < allTextures.size(); i++)
 		{
-			bool widthAndHeightZero = allTextures[i]->width == 0 || allTextures[i]->height == 0;
-			if (allTextures[i]->filename != "" && allTextures[i] != nullptr)
+			if(allTextures[i]->type != Texture::Type::DataOnly)
 			{
-				int imageWidth = allTextures[i]->width;
-				int imageHeight = allTextures[i]->height;
-
-				if (!widthAndHeightZero)
+				bool widthAndHeightZero = allTextures[i]->width == 0 || allTextures[i]->height == 0;
+				if (allTextures[i]->filename != "")
 				{
-					rbp::MaxRectsBinPack::FreeRectChoiceHeuristic heuristic = rbp::MaxRectsBinPack::RectContactPointRule; // This can be changed individually even for each rectangle packed.
-
-					rbp::Rect packedRect = bin.Insert(imageWidth, imageHeight, heuristic);
-
-					if (packedRect.height > 0)
+					int imageWidth = allTextures[i]->width;
+					int imageHeight = allTextures[i]->height;
+	
+					if (!widthAndHeightZero)
 					{
-						//printf("Packed to (x,y)=(%d,%d), (w,h)=(%d,%d). Free space left: %.2f%%\n", packedRect.x, packedRect.y, packedRect.width, packedRect.height, 100.f - bin.Occupancy() * 100.f);
-						//std::cout << bin.Occupancy() << std::endl;
-						allTextures[i]->finalRect = packedRect;
-						countDone++;
+						rbp::MaxRectsBinPack::FreeRectChoiceHeuristic heuristic = rbp::MaxRectsBinPack::RectContactPointRule; // This can be changed individually even for each rectangle packed.
+	
+						rbp::Rect packedRect = bin.Insert(imageWidth, imageHeight, heuristic);
+	
+						if (packedRect.height > 0)
+						{
+							//printf("Packed to (x,y)=(%d,%d), (w,h)=(%d,%d). Free space left: %.2f%%\n", packedRect.x, packedRect.y, packedRect.width, packedRect.height, 100.f - bin.Occupancy() * 100.f);
+							//std::cout << bin.Occupancy() << std::endl;
+							allTextures[i]->finalRect = packedRect;
+							countDone++;
+						}
+						else
+						{
+							//printf("Failed! Could not find a proper position to pack this rectangle into. Repacking!.\n");
+							if(switchBetweenWandH)
+								width += 512;
+							else
+								height += 512;
+							break;
+						}
 					}
 					else
 					{
-						//printf("Failed! Could not find a proper position to pack this rectangle into. Repacking!.\n");
-						if(switchBetweenWandH)
-							width += 512;
-						else
-							height += 512;
-						break;
+						countDone++;
 					}
-				}
-				else
-				{
-					countDone++;
 				}
 			}
 		}
@@ -117,63 +165,66 @@ void TextureGroup::UploadToGPU()
 
 	for (int i = 0; i < allTextures.size(); i++)
 	{
-		bool widthAndHeightZero = allTextures[i]->width == 0 || allTextures[i]->height == 0;
-		if (!widthAndHeightZero && allTextures[i]->filename != "" && allTextures[i] != nullptr)
+		if(allTextures[i]->type != Texture::Type::DataOnly)
 		{
-			//std::cout << i << std::endl;
-			int forWidth = allTextures[i]->finalRect.x;
-			int forHeight = allTextures[i]->finalRect.y;
-
-			//std::cout << forWidth << " + " << forWidth + allTextures[i]->width << " x " << forHeight << " + " << forHeight + allTextures[i]->height << std::endl;
-
-			std::vector<unsigned char> imageData = allTextures[i]->data;
-
-			bool firstP = true;
-			count = 0;
-			//std::cout << "============" << std::endl;
-			unsigned int normalH = 0;
-			std::cout << allTextures[i]->filename << "\n";
-			if (allTextures[i]->data.size() != 0)
+			bool widthAndHeightZero = allTextures[i]->width == 0 || allTextures[i]->height == 0;
+			if (!widthAndHeightZero && allTextures[i]->filename != "" && allTextures[i] != nullptr)
 			{
-				for (int h = forHeight; h < forHeight + allTextures[i]->height; h++)
+				//std::cout << i << std::endl;
+				int forWidth = allTextures[i]->finalRect.x;
+				int forHeight = allTextures[i]->finalRect.y;
+	
+				//std::cout << forWidth << " + " << forWidth + allTextures[i]->width << " x " << forHeight << " + " << forHeight + allTextures[i]->height << std::endl;
+	
+				std::vector<unsigned char> imageData = allTextures[i]->data;
+	
+				bool firstP = true;
+				count = 0;
+				//std::cout << "============" << std::endl;
+				unsigned int normalH = 0;
+				std::cout << allTextures[i]->filename << "\n";
+				if (allTextures[i]->data.size() != 0)
 				{
-					unsigned int normalW = 0;
-					for (int w = forWidth; w < forWidth + allTextures[i]->width; w++)
+					for (int h = forHeight; h < forHeight + allTextures[i]->height; h++)
 					{
-						unsigned int index = 0;
-						index = (h * width + w) * 4;
-						unsigned int r = index, g = index + 1, b = index + 2, a = index + 3;
-						unsigned int imageIndex = (normalH * allTextures[i]->width + normalW) * 4;
-						unsigned int imR = imageIndex, imG = imageIndex + 1, imB = imageIndex + 2, imA = imageIndex + 3;
-
-						//std::cout << index << "(" << imR << ")" << " ";
-
-						/*if (i == 142)
+						unsigned int normalW = 0;
+						for (int w = forWidth; w < forWidth + allTextures[i]->width; w++)
 						{
-							std::cout << "4 * " << h << " * " << width << " + " << w << " = " << index << std::endl;
-						}*/
-
-						groupData[r] = imageData[imR];
-						groupData[g] = imageData[imG];
-						groupData[b] = imageData[imB];
-						groupData[a] = imageData[imA];
-
-						normalW += 1;
+							unsigned int index = 0;
+							index = (h * width + w) * 4;
+							unsigned int r = index, g = index + 1, b = index + 2, a = index + 3;
+							unsigned int imageIndex = (normalH * allTextures[i]->width + normalW) * 4;
+							unsigned int imR = imageIndex, imG = imageIndex + 1, imB = imageIndex + 2, imA = imageIndex + 3;
+	
+							//std::cout << index << "(" << imR << ")" << " ";
+	
+							/*if (i == 142)
+							{
+								std::cout << "4 * " << h << " * " << width << " + " << w << " = " << index << std::endl;
+							}*/
+	
+							groupData[r] = imageData[imR];
+							groupData[g] = imageData[imG];
+							groupData[b] = imageData[imB];
+							groupData[a] = imageData[imA];
+	
+							normalW += 1;
+						}
+						normalH++;
 					}
-					normalH++;
 				}
+				else
+				{
+					std::cout << "[ERROR] " << allTextures[i]->filename << " has no data!" << std::endl;
+				}
+	
+				imageData.clear();
+				std::vector<unsigned char>().swap(imageData);
 			}
-			else
-			{
-				std::cout << "[ERROR] " << allTextures[i]->filename << " has no data!" << std::endl;
-			}
-
-			imageData.clear();
-			std::vector<unsigned char>().swap(imageData);
+	
+			allTextures[i]->isLoadedToGPU = true;
+			//std::cout << std::endl;
 		}
-
-		allTextures[i]->isLoadedToGPU = true;
-		//std::cout << std::endl;
 	}
 
 	/*for (int h = 0; h < height; h++)
