@@ -69,12 +69,14 @@ void RendererCore::AddModel(Model& m, DrawCall& d)
 
 		if (m.texture != nullptr)
 		{
-			m.vertices[i].textureGroupId = m.texture->texGroupId;
+			float x, y, width, height;
 
-			float x = (float)m.texture->finalRect.x,
-				y = (float)m.texture->finalRect.y,
-				width = (float)m.texture->finalRect.x + (float)m.texture->finalRect.width,
-				height = (float)m.texture->finalRect.y + (float)m.texture->finalRect.height;
+			x = (float)m.texture->finalRect.x;
+			y = (float)m.texture->finalRect.y;
+			width = (float)m.texture->finalRect.x + (float)m.texture->finalRect.width;
+			height = (float)m.texture->finalRect.y + (float)m.texture->finalRect.height;
+
+			m.vertices[i].textureGroupId = m.texture->texGroupId;
 
 			if (m.flipXTexture)
 				std::swap(x, width);
