@@ -24,6 +24,7 @@ public:
 	};
 
 	Texture* Cut(int x, int y, int width, int height);
+	Texture* Cut(int x, int y, int width, int height, std::string suffix);
 
 	Texture();
 	Texture(const char* fileName, Type type);
