@@ -794,26 +794,26 @@ void RendererCore::GetBeginAndEndVectors()
 				std::sort(d.modifyVectors.begin(), d.modifyVectors.end());
 
 				int lastVertex = 0;
-				int halfvertexChangeArrayRange = vertexChangeArrayRange / 2;
+				//int halfvertexChangeArrayRange = vertexChangeArrayRange / 2;
 				for (int i = 0; i < d.modifyVectors.size(); i++)
 				{
-					if (d.modifyVectors[i] - lastVertex > 100 || i == 0)
+					if (/*d.modifyVectors[i] - lastVertex > 100 ||*/ i == 0)
 					{
 						std::vector<int> e;
 						e.resize(2);
 						d.modifyVerticesArray.push_back(e);
 
-						if (d.modifyVectors[i] - halfvertexChangeArrayRange < 0)
+						if (d.modifyVectors[i] - 1 < 0)
 							d.modifyVerticesArray[d.modifyVerticesArray.size() - 1][0] = 0;
 						else
-							d.modifyVerticesArray[d.modifyVerticesArray.size() - 1][0] = d.modifyVectors[i] - halfvertexChangeArrayRange;
+							d.modifyVerticesArray[d.modifyVerticesArray.size() - 1][0] = d.modifyVectors[i] - 1;
 					}
 					else if (i != 0)
 					{
-						if (d.modifyVectors[i] + halfvertexChangeArrayRange > d.allVerts.size())
+						if (d.modifyVectors[i] + 1 > d.allVerts.size())
 							d.modifyVerticesArray[d.modifyVerticesArray.size() - 1][1] = d.allVerts.size();
 						else
-							d.modifyVerticesArray[d.modifyVerticesArray.size() - 1][1] = d.modifyVectors[i] + halfvertexChangeArrayRange;
+							d.modifyVerticesArray[d.modifyVerticesArray.size() - 1][1] = d.modifyVectors[i] + 1;
 					}
 
 					lastVertex = d.modifyVectors[i];
