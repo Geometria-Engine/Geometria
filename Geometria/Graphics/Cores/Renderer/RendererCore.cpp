@@ -794,10 +794,9 @@ void RendererCore::GetBeginAndEndVectors()
 				std::sort(d.modifyVectors.begin(), d.modifyVectors.end());
 
 				int lastVertex = 0;
-				//int halfvertexChangeArrayRange = vertexChangeArrayRange / 2;
 				for (int i = 0; i < d.modifyVectors.size(); i++)
 				{
-					if (/*d.modifyVectors[i] - lastVertex > 100 ||*/ i == 0)
+					if (i == 0)
 					{
 						std::vector<int> e;
 						e.resize(2);

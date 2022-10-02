@@ -52,26 +52,22 @@ void TextureGroup::AddTexture(Texture& tex)
 	Texture& t = *allTextures[allTextures.size() - 1];
 }
 
-Texture* Texture::Cut(int x, int y, int width, int height){
-	this->Cut(x, y, width, height, "#Cut");
-}
-
-Texture* Texture::Cut(int x, int y, int width, int height, std::string suffix)
+Texture* Texture::Cut(int x, int y, int width, int height)
 {
 	Texture* newTexture = new Texture();
-	newTexture->filename = filename + suffix;
+	newTexture->filename = filename + "#Cut";
 	newTexture->width = width;
 	newTexture->height = height;
 
-	for(int h = y; h < y+height; h++)
+	for(int h = 0; h < this->height; h++)
 	{
-		if(h < this->height)
+		if(h < newTexture->height)
 		{
-			for(int w = x; w < x+width; w++)
+			for(int w = 0; w < this->width; w++)
 			{
 				unsigned int index = 0;
 				index = (h * this->width + w) * 4;
-				if(w < this->width)
+				if(w < newTexture->width)
 				{
 					newTexture->data.push_back(this->data[index]);
 					newTexture->data.push_back(this->data[index + 1]);

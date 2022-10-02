@@ -37,6 +37,8 @@ struct iGUI : public ScriptBehaviour
 
 	static void GlobalFrameBegin();
 	static void GlobalFrameEnd();
+
+	void RenderImage(Texture& tex, ImDrawList* drawList, ImVec2 pos, ImVec2 size, Color col);
 };
 
 #endif

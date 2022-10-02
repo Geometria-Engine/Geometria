@@ -40,15 +40,26 @@ void iWindow::UI_SetAndGetTransform()
 {
 	iStyle_Window* getWindowStyle = GetWindowStyle();
 
-	int alignW, alignH;
+	int alignW, alignH, scaleW, scaleH;
+
+	if(getWindowStyle->_screenScale != Vector2(-1, -1))
+	{
+		scaleW = ((float)getWindowStyle->_screenScale.x / 100.f) * Graphics::GetMainWindow().width + GetTransform().scale.x;
+		scaleH = ((float)getWindowStyle->_screenScale.x / 100.f) * Graphics::GetMainWindow().height + GetTransform().scale.y;
+	}
+	else
+	{
+		scaleW = GetTransform().scale.x;
+		scaleH = GetTransform().scale.y;
+	}
 
 	if(!getWindowStyle->IsResizable())
-		ImGui::SetNextWindowSize(ImVec2(GetTransform().scale.x, GetTransform().scale.y), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(scaleW, scaleH), ImGuiCond_Always);
 
 	if(getWindowStyle->_screenPosition != Vector2(-1, -1))
 	{
-		alignW = Graphics::GetMainWindow().width * getWindowStyle->_screenPosition.x - (GetTransform().scale.x / (1 / getWindowStyle->_screenPosition.x)) + (_imGuiScreenPos.x / Graphics::GetMainWindow().width) + GetTransform().position.x;
-		alignH = Graphics::GetMainWindow().height * getWindowStyle->_screenPosition.y - (GetTransform().scale.y / (1 / getWindowStyle->_screenPosition.y)) + (_imGuiScreenPos.y / Graphics::GetMainWindow().height) - GetTransform().position.y;
+		alignW = Graphics::GetMainWindow().width * getWindowStyle->_screenPosition.x - (scaleW / (1 / getWindowStyle->_screenPosition.x)) + (_imGuiScreenPos.x / Graphics::GetMainWindow().width) + GetTransform().position.x;
+		alignH = Graphics::GetMainWindow().height * getWindowStyle->_screenPosition.y - (scaleH / (1 / getWindowStyle->_screenPosition.y)) + (_imGuiScreenPos.y / Graphics::GetMainWindow().height) - GetTransform().position.y;
 	}
 	else
 	{
@@ -260,7 +271,9 @@ void iWindow::OnUpdate()
 
 	UI_SetAndGetTransform();
 
+	ImGuiStyle* style = &ImGui::GetStyle();
 	iStyle_Window* getWindowStyle = GetWindowStyle();
+	iStyle* currentStyle = CurrentStyle();
 
 	ImGui::GetStyle().WindowRounding = getWindowStyle->CurrentBorder()->Radius();
 
@@ -274,12 +287,28 @@ void iWindow::OnUpdate()
 		if(getWindowStyle->IsResizable())
 			GetTransform().scale = Vector2(ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
 
-		UI_RenderBackgroundGradient(getWindowStyle);
+		if(currentStyle->_backgroundImage != nullptr)
+		{
+			ImVec4 saveColor = style->Colors[ImGuiCol_WindowBg];
+			style->Colors[ImGuiCol_WindowBg] = ImVec4(0, 0, 0, 0);
+
+			RenderImage(*currentStyle->_backgroundImage, 
+				ImGui::GetWindowDrawList(), 
+				ImGui::GetWindowPos(),
+				ImGui::GetWindowSize(),
+				currentStyle->_backgroundColor);
+
+			style->Colors[ImGuiCol_WindowBg] = saveColor;
+		}
+
+		if(currentStyle->_backgroundGradient != nullptr)
+			UI_RenderBackgroundGradient(getWindowStyle);
 
 		for(auto i : allElements)
 			i->OnUpdate();
 
-		UI_RenderBorder(getWindowStyle, ImGui::IsWindowFocused());
+		if(getWindowStyle->CurrentBorder()->Size() > 0)
+			UI_RenderBorder(getWindowStyle, ImGui::IsWindowFocused());
 		
 		ImGui::End();
 	}

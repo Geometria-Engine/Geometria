@@ -5,6 +5,7 @@
 #include <vector>
 #include "Tools/Vector.h"
 #include "Tools/Color.h"
+#include "Graphics/Cores/Texture/Texture.h"
 
 struct iStyle;
 
@@ -91,6 +92,8 @@ struct iStyle
 
 	iGradient* _backgroundGradient = nullptr;
 
+	Texture* _backgroundImage = nullptr;
+
 	iStyle()
 	{
 		styleId = iStyleManager::allStyles.size();
@@ -114,6 +117,11 @@ struct iStyle
 	}
 
 	iGradient*& BackgroundGradient();
+
+	Texture*& BackgroundImage()
+	{
+		return _backgroundImage;
+	}
 
 	void UI_PushColors();
 	void UI_PopColors();

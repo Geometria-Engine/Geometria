@@ -70,3 +70,39 @@ void iGUI::GlobalFrameEnd()
 		i->ImGuiEnd();
 	}
 }
+
+void iGUI::RenderImage(Texture& tex, ImDrawList* drawList, ImVec2 pos, ImVec2 size, Color col)
+{
+	if(tex.IsLoadedToGPU())
+	{
+		//std::cout << "Pos: " << pos.x << ", " << pos.y << std::endl;
+		//std::cout << "Size: " << size.x << ", " << size.y << std::endl;
+
+		iStyle* current = CurrentStyle();
+	
+		ImVec2 uvMin(float(tex.finalRect.x) / float(TextureManager::textureGroups[tex.texGroupId].width),
+			float(tex.finalRect.y) / float(TextureManager::textureGroups[tex.texGroupId].height));
+	
+		ImVec2 uvMax(float(tex.finalRect.x + tex.finalRect.width) / float(TextureManager::textureGroups[tex.texGroupId].width),
+			float(tex.finalRect.y + tex.finalRect.height) / float(TextureManager::textureGroups[tex.texGroupId].height));
+		
+		if(col != Color(-1, -1, -1, -1))
+		{
+			drawList->AddImage((void*)(intptr_t)TextureManager::textureGroups[tex.texGroupId].texture,
+				pos,
+				ImVec2(pos.x + size.x, pos.y + size.y), 
+				uvMin, uvMax, ImColor(col.r * 255, col.g * 255, col.b * 255, col.a * 255));
+		}
+		else
+		{
+			drawList->AddImage((void*)(intptr_t)TextureManager::textureGroups[tex.texGroupId].texture,
+				pos,
+				ImVec2(pos.x + size.x, pos.y + size.y), 
+				uvMin, uvMax, ImColor(255, 255, 255, 255));
+		}
+	}
+	else
+	{
+		std::cout << "Texture is not uploaded to GPU!" << std::endl;
+	}
+}

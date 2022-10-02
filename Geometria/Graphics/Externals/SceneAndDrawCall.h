@@ -2,6 +2,7 @@
 #define SCENE_AND_DRAW_CALL_H
 
 #include <vector>
+#include <array>
 #include "ImGUIElement.h"
 
 class RendererCore;
