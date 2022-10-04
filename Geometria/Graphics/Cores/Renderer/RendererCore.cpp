@@ -913,175 +913,178 @@ void RendererCore::OpenGL_Render()
 				//std::cout << "Scene: " << scene + 1 << " Draw Call: " << draw + 1 << std::endl;
 				DrawCall& d = *SceneManager::_allScenes[scene]._drawCalls[draw];
 
-				if(d.depthB == DrawCall::DepthBuffer::DisableOnStart)
-					glClear(GL_DEPTH_BUFFER_BIT);
-
-				if(d.intDM == DrawCall::InternalDepthMask::DMDisabled)
-					glDepthMask(GL_FALSE);
-
-				if (d.deleteProcess)
+				if(d.isEnabled)
 				{
-					RendererCore::SortVertices();
-					d.deleteProcess = false;
-				}
-
-				if (d.type == DrawCall::Type::UI)
-				{
-					if (d.start > 2)
+					if(d.depthB == DrawCall::DepthBuffer::DisableOnStart)
+						glClear(GL_DEPTH_BUFFER_BIT);
+	
+					if(d.intDM == DrawCall::InternalDepthMask::DMDisabled)
+						glDepthMask(GL_FALSE);
+	
+					if (d.deleteProcess)
 					{
-						if(d.allImGUI.size() != 0 || d.alliGUI.size() != 0)
-						{
-							iGUI::GlobalFrameBegin();
-
-							//TODO: Make it so it is compatible with OpenGL 2 TOO!
-							ImGui_ImplGlfw_NewFrame();
-							ImGui_ImplOpenGL3_NewFrame();
-							ImGui::NewFrame();
-
-							if(d.allImGUI.size() != 0)
-							{
-								for (int i = 0; i < d.allImGUI.size(); i++)
-								{
-									d.allImGUI[i]->OnUpdate();
-								}
-							}
-							else if(d.alliGUI.size() != 0)
-							{
-								for (int i = 0; i < d.alliGUI.size(); i++)
-								{
-									d.alliGUI[i]->OnUpdate();
-								}
-							}
-
-							ImGui::Render();
-							ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-						}
+						RendererCore::SortVertices();
+						d.deleteProcess = false;
 					}
-				}
-
-				/*if (sortTime > 2)
-				{
-					std::cout << "Sorting!" << std::endl;
-					SingleSort(d);
-					sortTime = 0;
-				}
-				else
-				{
-					std::cout << sortTime << std::endl;
-				}*/
-
-				if (d.start > 2 && d.allModels.size() != 0)
-				{
-					glBindBuffer(GL_ARRAY_BUFFER, d.VBO);
-
-					if (d.allVerts.size() != d._lastVertCount || d.refresh)
+	
+					if (d.type == DrawCall::Type::UI)
 					{
-						if (d.type == DrawCall::Type::Dynamic || d.type == DrawCall::Type::UI)
+						if (d.start > 2)
 						{
-							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), d.allVerts.data(), GL_DYNAMIC_DRAW);
-							//glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), NULL, GL_DYNAMIC_DRAW);
-							//d.bufferPointer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-							d._lastVertCount = d.allVerts.size();
-
-							//memcpy(d.bufferPointer, &d.allVerts[0], d.allVerts.size() * sizeof(Vertex));
-							//glUnmapBuffer(GL_ARRAY_BUFFER);
-						}
-						else if (d.type == DrawCall::Type::Hybrid || d.type == DrawCall::Type::Object)
-						{
-							glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), d.allVerts.data(), GL_DYNAMIC_DRAW);
-							d._lastVertCount = d.allVerts.size();
-						}
-
-						d.refresh = false;
-					}
-					else
-					{
-						if (d.type == DrawCall::Type::Dynamic || d.type == DrawCall::Type::UI)
-						{
-							std::vector<Vertex> modifiedVerts;
-
-							int vertSize = d.modifyVerticesArray.size();
-							if (vertSize != 0)
+							if(d.allImGUI.size() != 0 || d.alliGUI.size() != 0)
 							{
-								for (int m = 0; m < vertSize; m++)
+								iGUI::GlobalFrameBegin();
+	
+								//TODO: Make it so it is compatible with OpenGL 2 TOO!
+								ImGui_ImplGlfw_NewFrame();
+								ImGui_ImplOpenGL3_NewFrame();
+								ImGui::NewFrame();
+	
+								if(d.allImGUI.size() != 0)
 								{
-									for (int i = d.modifyVerticesArray[m][0]; i < d.modifyVerticesArray[m][1]; i++)
+									for (int i = 0; i < d.allImGUI.size(); i++)
 									{
-										modifiedVerts.push_back(d.allVerts[i]);
-										//d.bufferPointer[i] = d.allVerts[i];
+										d.allImGUI[i]->OnUpdate();
 									}
-
-									glBufferSubData(GL_ARRAY_BUFFER, d.modifyVerticesArray[m][0] * sizeof(Vertex), (d.modifyVerticesArray[m][1] - d.modifyVerticesArray[m][0]) * sizeof(Vertex), modifiedVerts.data());
 								}
+								else if(d.alliGUI.size() != 0)
+								{
+									for (int i = 0; i < d.alliGUI.size(); i++)
+									{
+										d.alliGUI[i]->OnUpdate();
+									}
+								}
+	
+								ImGui::Render();
+								ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 							}
-							//std::cout << "=============" << std::endl;
-							//std::cout << d.allVerts.data() << std::endl;
-							//std::cout << "=============" << std::endl;
 						}
-						else if (d.type == DrawCall::Type::Hybrid && d.updateHybrid == true)
+					}
+	
+					/*if (sortTime > 2)
+					{
+						std::cout << "Sorting!" << std::endl;
+						SingleSort(d);
+						sortTime = 0;
+					}
+					else
+					{
+						std::cout << sortTime << std::endl;
+					}*/
+	
+					if (d.start > 2 && d.allModels.size() != 0)
+					{
+						glBindBuffer(GL_ARRAY_BUFFER, d.VBO);
+	
+						if (d.allVerts.size() != d._lastVertCount || d.refresh)
 						{
-							glBufferSubData(GL_ARRAY_BUFFER, 0, d.allVerts.size() * sizeof(Vertex), d.allVerts.data());
-							d.updateHybrid = false;
+							if (d.type == DrawCall::Type::Dynamic || d.type == DrawCall::Type::UI)
+							{
+								glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), d.allVerts.data(), GL_DYNAMIC_DRAW);
+								//glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), NULL, GL_DYNAMIC_DRAW);
+								//d.bufferPointer = (Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+								d._lastVertCount = d.allVerts.size();
+	
+								//memcpy(d.bufferPointer, &d.allVerts[0], d.allVerts.size() * sizeof(Vertex));
+								//glUnmapBuffer(GL_ARRAY_BUFFER);
+							}
+							else if (d.type == DrawCall::Type::Hybrid || d.type == DrawCall::Type::Object)
+							{
+								glBufferData(GL_ARRAY_BUFFER, d.allVerts.size() * sizeof(Vertex), d.allVerts.data(), GL_DYNAMIC_DRAW);
+								d._lastVertCount = d.allVerts.size();
+							}
+	
+							d.refresh = false;
 						}
-
+						else
+						{
+							if (d.type == DrawCall::Type::Dynamic || d.type == DrawCall::Type::UI)
+							{
+								std::vector<Vertex> modifiedVerts;
+	
+								int vertSize = d.modifyVerticesArray.size();
+								if (vertSize != 0)
+								{
+									for (int m = 0; m < vertSize; m++)
+									{
+										for (int i = d.modifyVerticesArray[m][0]; i < d.modifyVerticesArray[m][1]; i++)
+										{
+											modifiedVerts.push_back(d.allVerts[i]);
+											//d.bufferPointer[i] = d.allVerts[i];
+										}
+	
+										glBufferSubData(GL_ARRAY_BUFFER, d.modifyVerticesArray[m][0] * sizeof(Vertex), (d.modifyVerticesArray[m][1] - d.modifyVerticesArray[m][0]) * sizeof(Vertex), modifiedVerts.data());
+									}
+								}
+								//std::cout << "=============" << std::endl;
+								//std::cout << d.allVerts.data() << std::endl;
+								//std::cout << "=============" << std::endl;
+							}
+							else if (d.type == DrawCall::Type::Hybrid && d.updateHybrid == true)
+							{
+								glBufferSubData(GL_ARRAY_BUFFER, 0, d.allVerts.size() * sizeof(Vertex), d.allVerts.data());
+								d.updateHybrid = false;
+							}
+	
+						}
+	
+						//std::cout << mvIndexBegin << " - " << mvIndexEnd << " = " << mvIndexEnd - mvIndexBegin << std::endl;
+	
+						if (!d.elementsChanged)
+						{
+							d.modifyVectors.clear();
+							//changeModelsInSinglethread.clear();
+							d.updateCounter = 0;
+						}
+						else if (d.updateCounter < 10)
+						{
+							d.updateCounter++;
+						}
+						else
+						{
+							d.elementsChanged = false;
+						}
+	
+						d.modifyVerticesArray.clear();
+	
+						d.mvIndexBegin = 0;
+						d.mvIndexEnd = 0;
+	
+						d.mainShader->Enable();
+	
+						Matrix MVP;
+						
+						if (d.type != DrawCall::Type::UI)
+							MVP = d.worldMatrix * Graphics::MainCamera()->GetViewProjection();
+						else
+						{
+							MVP = d.worldMatrix * Graphics::MainCamera()->GetUIProjection(RendererCore::WindowWidth(), RendererCore::WindowHeight());
+						}
+	
+						d.mainShader->GPU_SetInt("textures0", 0);
+						//d.mainShader->GPU_SetInt("texture0", 1);
+						d.mainShader->GPU_SetMatrix("MVP", MVP);
+	
+						TextureManager::EnableTextures();
+	
+						//glGetIntegerv(GL_DEPTH_FUNC, &depthFunct);
+						glBindVertexArray(d.VAO);
+						glDrawElements(GL_TRIANGLES, d.allVerts.size() * 2, GL_UNSIGNED_INT, nullptr);
+	
+						while (GLenum error = glGetError())
+						{
+							std::cout << "[ERROR] " << error << std::endl;
+						}
+	
+						//glDrawElements(GL_TRIANGLES, allIndices.size(), GL_UNSIGNED_INT, nullptr);
 					}
-
-					//std::cout << mvIndexBegin << " - " << mvIndexEnd << " = " << mvIndexEnd - mvIndexBegin << std::endl;
-
-					if (!d.elementsChanged)
-					{
-						d.modifyVectors.clear();
-						//changeModelsInSinglethread.clear();
-						d.updateCounter = 0;
-					}
-					else if (d.updateCounter < 10)
-					{
-						d.updateCounter++;
-					}
-					else
-					{
-						d.elementsChanged = false;
-					}
-
-					d.modifyVerticesArray.clear();
-
-					d.mvIndexBegin = 0;
-					d.mvIndexEnd = 0;
-
-					d.mainShader->Enable();
-
-					Matrix MVP;
-					
-					if (d.type != DrawCall::Type::UI)
-						MVP = d.worldMatrix * Graphics::MainCamera()->GetViewProjection();
-					else
-					{
-						MVP = d.worldMatrix * Graphics::MainCamera()->GetUIProjection(RendererCore::WindowWidth(), RendererCore::WindowHeight());
-					}
-
-					d.mainShader->GPU_SetInt("textures0", 0);
-					//d.mainShader->GPU_SetInt("texture0", 1);
-					d.mainShader->GPU_SetMatrix("MVP", MVP);
-
-					TextureManager::EnableTextures();
-
-					//glGetIntegerv(GL_DEPTH_FUNC, &depthFunct);
-					glBindVertexArray(d.VAO);
-					glDrawElements(GL_TRIANGLES, d.allVerts.size() * 2, GL_UNSIGNED_INT, nullptr);
-
-					while (GLenum error = glGetError())
-					{
-						std::cout << "[ERROR] " << error << std::endl;
-					}
-
-					//glDrawElements(GL_TRIANGLES, allIndices.size(), GL_UNSIGNED_INT, nullptr);
+	
+					if(d.depthB == DrawCall::DepthBuffer::DisableOnEnd)
+						glClear(GL_DEPTH_BUFFER_BIT);
+	
+					if(d.intDM == DrawCall::InternalDepthMask::DMDisabled)
+						glDepthMask(GL_TRUE);
 				}
-
-				if(d.depthB == DrawCall::DepthBuffer::DisableOnEnd)
-					glClear(GL_DEPTH_BUFFER_BIT);
-
-				if(d.intDM == DrawCall::InternalDepthMask::DMDisabled)
-					glDepthMask(GL_TRUE);
 			}
 		}
 	}

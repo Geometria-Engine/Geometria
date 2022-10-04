@@ -1,44 +1,23 @@
 # Geometria Engine
 
+A game/app engine focused on user freedom and performance.
+
 ![Stars](https://img.shields.io/github/stars/Geometria-Engine/Geometria)
 ![Issues](https://img.shields.io/github/issues/Geometria-Engine/Geometria)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-## Installation
+This engine can be used to making games with blazingly fast performance. One of its greatest strenghts is the ability to run modern and heavy stuff in *really* low-end computers, and at the same time extend the capabilities of mid/high-end.
 
-### Windows
-* [Visual Studio](#visual-studio-windows)
+## Features
 
-### Linux
-* [Make](#make-linux)
-
-### Visual Studio (Windows)
-
-Requirements:
-* [Visual Studio (from 2005 to 2019, whatever version fits best for you) with the Deskop C++ Environment package](https://visualstudio.microsoft.com/vs/)
-
-Once you have the requirements, go to the main folder and either open the ``"GenerateProjectWindows.bat"`` and follow the instructions,
-or open the command prompt/terminal in the folder and type:
-
-``
-premake5-windows.exe (vs2019-2005)
-``
-
-Wait for the process to finish and now a .sln will be created in the main folder. Now you can open and run it!
-
-### Make (Linux)
-
-Requirements:
-Run this command in the terminal to make sure you have everything installed:
-
-``sudo apt install make build-essential gcc gcc-multilib g++-multilib libx11-dev libgl1-mesa-dev xorg-dev libglu1-mesa-dev openssl libssl-dev libcurl4-openssl-dev``
-
-Once you have everything installed, go to the main folder and type in the terminal:
-
-``./premake5-linux gmake2`` (Make sure the "premake5-linux" binary has all of the necessary read and write permissions)
-
-And a Makefile project will be created once everything is finished. Now you can use:
-
-``make``
-
-and compile the entire project.
+- Control the entire rendering system by using Draw Calls as objects.
+- Complete Scripting API made for preventing hardcoding and making the environment more organized.
+- Support for Linux and Windows.
+- Multithreading Support.
+- Complete 2D and 3D Physics.
+- Ultra performance, capable of bringing modern technologies to hardware older than 15 years old.
+- The minimum requirement is a 2006 machine.
+- The engine is made in C++, so you code in C++.
+- Full focus on KISS (Keep It Stupid Simple) for experienced programmers and for people that never touched C++.
+- Your game/app comes with the engine inside for complete engine control, so you can add features and/or fix bugs for that specific project.
+- Complete toolkit for much more simpler compilation process across different IDEs and text editors.
