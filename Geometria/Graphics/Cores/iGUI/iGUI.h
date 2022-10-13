@@ -29,6 +29,8 @@ struct iGUI : public ScriptBehaviour
 
 	std::vector<iGUI*> allElements;
 
+	Vector2 _truePosition, _trueScale;
+
 	static void SetGlobalStyle();
 
 	static iStyle* GlobalStyle();

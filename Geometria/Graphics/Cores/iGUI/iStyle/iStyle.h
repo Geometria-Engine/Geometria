@@ -15,6 +15,11 @@ struct iStyleManager
 	static std::vector<iFont*> allFonts;
 };
 
+struct iStyle_Image
+{
+
+};
+
 struct iStyle_Border
 {
 	Color _borderColor = Color(-1, -1, -1, -1);
@@ -62,9 +67,6 @@ struct iStyle_Window
 	bool _move = true;
 	bool _setTransformStart = false;
 
-	Vector2 _screenPosition = Vector2(-1, -1);
-	Vector2 _screenScale = Vector2(-1, -1);
-
 	iStyle_Border* border = nullptr;
 
 	bool& IsResizable() { return _resize; }
@@ -72,9 +74,6 @@ struct iStyle_Window
 	bool& CanScroll() { return _scroll; }
 	bool& IsDraggable() { return _move; }
 	bool& SetTransformAtStart() { return _setTransformStart; }
-
-	Vector2& ScreenPosition() { return _screenPosition; }
-	Vector2& ScreenScale() { return _screenScale; }
 
 	iStyle_Border*& Border();
 	iStyle_Border*& CurrentBorder();
@@ -94,11 +93,20 @@ struct iStyle
 
 	Texture* _backgroundImage = nullptr;
 
+	Vector2 _screenPosition = Vector2(-1, -1);
+	Vector2 _screenScale = Vector2(-1, -1);
+
 	iStyle()
 	{
 		styleId = iStyleManager::allStyles.size();
 		iStyleManager::allStyles.push_back(this);
 	}
+
+	Vector2& ScreenPosition();
+
+	bool _setScaleToZero = false;
+	Vector2& ScreenScale();
+	Vector2& ScreenScale(bool t);
 
 	iFont*& Font();
 

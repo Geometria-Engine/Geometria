@@ -38,14 +38,29 @@ void iWindow::UI_PopStyleParams()
 
 void iWindow::UI_SetAndGetTransform()
 {
+	iStyle* currentStyle = CurrentStyle();
 	iStyle_Window* getWindowStyle = GetWindowStyle();
 
 	int alignW, alignH, scaleW, scaleH;
 
-	if(getWindowStyle->_screenScale != Vector2(-1, -1))
+	if(currentStyle->_setScaleToZero)
 	{
-		scaleW = ((float)getWindowStyle->_screenScale.x / 100.f) * Graphics::GetMainWindow().width + GetTransform().scale.x;
-		scaleH = ((float)getWindowStyle->_screenScale.x / 100.f) * Graphics::GetMainWindow().height + GetTransform().scale.y;
+		GetTransform().scale = Vector2(0, 0);
+		currentStyle->_setScaleToZero = false;
+	}
+
+	if(currentStyle->_screenScale != Vector2(-1, -1))
+	{
+		if(owner == nullptr)
+		{
+			scaleW = Graphics::GetMainWindow().width * ((float)currentStyle->_screenScale.x / 100.f) + GetTransform().scale.x;
+			scaleH = Graphics::GetMainWindow().height * ((float)currentStyle->_screenScale.y / 100.f) + GetTransform().scale.y;
+		}
+		else
+		{
+			scaleW = owner->_trueScale.x * ((float)currentStyle->_screenScale.x / 100.f) + GetTransform().scale.x;
+			scaleH = owner->_trueScale.y * ((float)currentStyle->_screenScale.y / 100.f) + GetTransform().scale.y;
+		}
 	}
 	else
 	{
@@ -53,13 +68,25 @@ void iWindow::UI_SetAndGetTransform()
 		scaleH = GetTransform().scale.y;
 	}
 
-	if(!getWindowStyle->IsResizable())
+	if(!getWindowStyle->IsResizable() && owner == nullptr)
 		ImGui::SetNextWindowSize(ImVec2(scaleW, scaleH), ImGuiCond_Always);
 
-	if(getWindowStyle->_screenPosition != Vector2(-1, -1))
+	if(currentStyle->_screenPosition != Vector2(-1, -1))
 	{
-		alignW = Graphics::GetMainWindow().width * getWindowStyle->_screenPosition.x - (scaleW / (1 / getWindowStyle->_screenPosition.x)) + (_imGuiScreenPos.x / Graphics::GetMainWindow().width) + GetTransform().position.x;
-		alignH = Graphics::GetMainWindow().height * getWindowStyle->_screenPosition.y - (scaleH / (1 / getWindowStyle->_screenPosition.y)) + (_imGuiScreenPos.y / Graphics::GetMainWindow().height) - GetTransform().position.y;
+		if(owner == nullptr)
+		{
+			alignW = Graphics::GetMainWindow().width * currentStyle->_screenPosition.x - (scaleW / (1 / currentStyle->_screenPosition.x)) + (_imGuiScreenPos.x / Graphics::GetMainWindow().width) + GetTransform().position.x;
+			alignH = Graphics::GetMainWindow().height * currentStyle->_screenPosition.y - (scaleH / (1 / currentStyle->_screenPosition.y)) + (_imGuiScreenPos.y / Graphics::GetMainWindow().height) - GetTransform().position.y;
+		}
+		else
+		{
+
+			//alignW = ownerWidth * currentStyle->_screenPosition.x - (scaleW / (1 / currentStyle->_screenPosition.x)) + (_imGuiScreenPos.x / ownerWidth) + (ownerWidth * magic.x) + GetTransform().position.x;
+			//alignH = ownerHeight * currentStyle->_screenPosition.y - (scaleH / (1 / currentStyle->_screenPosition.y)) + (_imGuiScreenPos.y / ownerHeight) + (ownerHeight * magic.y) - GetTransform().position.y;
+
+			alignW = owner->_trueScale.x * currentStyle->_screenPosition.x + owner->_truePosition.x - (scaleW / (1 / currentStyle->_screenPosition.x));
+			alignH = owner->_trueScale.y * currentStyle->_screenPosition.y + owner->_truePosition.y - (scaleH / (1 / currentStyle->_screenPosition.y));
+		}
 	}
 	else
 	{
@@ -67,8 +94,11 @@ void iWindow::UI_SetAndGetTransform()
 		alignH = GetTransform().position.y;
 	}
 
-	if(!getWindowStyle->IsDraggable())
+	if(!getWindowStyle->IsDraggable() && owner == nullptr)
 		ImGui::SetNextWindowPos(ImVec2(alignW, alignH), ImGuiCond_Always);
+
+	_truePosition = Vector2(alignW, alignH);
+	_trueScale = Vector2(scaleW, scaleH);
 }
 
 void iWindow::OnStart()
@@ -277,9 +307,52 @@ void iWindow::OnUpdate()
 
 	ImGui::GetStyle().WindowRounding = getWindowStyle->CurrentBorder()->Radius();
 
-	if(ImGui::Begin(title.c_str(), nullptr, _window_flags))
+	bool finalWindow;
+
+	if(owner == nullptr)
+		finalWindow = ImGui::Begin(title.c_str(), nullptr, _window_flags);
+	else
 	{
-		_imGuiScreenPos = Vector2(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+		ImVec2 topLeft = ImVec2(_truePosition.x, _truePosition.y);
+		ImVec2 bottomRight = ImVec2(_truePosition.x + _trueScale.x, _truePosition.y + _trueScale.y);
+		ImGui::SetCursorScreenPos(topLeft);
+
+		finalWindow = ImGui::BeginChild(title.c_str(), ImVec2(_trueScale.x, _trueScale.y));
+		ImDrawList* draw_list = nullptr;
+		draw_list = ImGui::GetWindowDrawList();
+
+		ImColor finalColor;
+
+		if(currentStyle->_backgroundColor != Color(-1, -1, -1, -1))
+		{
+			finalColor = ImColor(
+				currentStyle->_backgroundColor.r * 255, 
+				currentStyle->_backgroundColor.g * 255,
+				currentStyle->_backgroundColor.b * 255,
+				currentStyle->_backgroundColor.a);
+		}
+		else
+		{
+			finalColor = ImColor(
+				iGUI::GlobalStyle()->_backgroundColor.r * 255,
+				iGUI::GlobalStyle()->_backgroundColor.g * 255,
+				iGUI::GlobalStyle()->_backgroundColor.b * 255,
+				iGUI::GlobalStyle()->_backgroundColor.a);
+		}
+
+		////std::cout << iGUI::GlobalStyle()->_backgroundColor.a * 255 << std::endl;
+
+		draw_list->AddRectFilled(topLeft, bottomRight, finalColor);
+		//ImGui::SetCursorScreenPos(topLeft);
+//
+		//finalWindow = true;
+	}
+
+	if(finalWindow)
+	{
+		//if(owner != nullptr)
+
+		_imGuiScreenPos = _truePosition;
 
 		if(getWindowStyle->IsDraggable())
 			GetTransform().position = _imGuiScreenPos;
@@ -303,6 +376,8 @@ void iWindow::OnUpdate()
 
 		if(currentStyle->_backgroundGradient != nullptr)
 			UI_RenderBackgroundGradient(getWindowStyle);
+
+		//ImGui::SetNextWindowFocus();
 
 		for(auto i : allElements)
 			i->OnUpdate();

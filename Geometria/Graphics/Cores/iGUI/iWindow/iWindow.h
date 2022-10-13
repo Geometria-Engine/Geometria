@@ -41,6 +41,33 @@ struct iWindow : public iGUI
 		}
 	}
 
+	iWindow(iGUI& owner, std::string title)
+	{
+		owner.allElements.push_back(this);
+		this->owner = &owner;
+
+		this->title = title;
+		GetTransform().scale = Vector3(400, 400, 0);
+	}
+
+	iWindow(iGUI& owner, std::string title, Mode mode)
+	{
+		owner.allElements.push_back(this);
+		this->owner = &owner;
+
+		this->title = title;
+		GetTransform().scale = Vector3(400, 400, 0);
+
+		if(mode == Mode::Canvas)
+		{
+			Style()->Window()->IsResizable() = false;
+			Style()->Window()->ShowTitle() = false;
+			Style()->Window()->CanScroll() = false;
+			Style()->Window()->IsDraggable() = false;
+			Style()->Window()->SetTransformAtStart() = true;
+		}
+	}
+
 	iStyle_Window* GetWindowStyle();
 
 	void UI_SetStyleParams();

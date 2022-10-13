@@ -20,6 +20,15 @@ iStyle_Border*& iStyle_Window::CurrentBorder()
 	return iGUI::GlobalStyle()->Window()->Border();
 }
 
+Vector2& iStyle::ScreenPosition() { return _screenPosition; }
+Vector2& iStyle::ScreenScale() { return ScreenScale(true); }
+
+Vector2& iStyle::ScreenScale(bool t)
+{
+	_setScaleToZero = t;
+	return _screenScale;
+}
+
 iFont*& iStyle::Font()
 {
 	return Font("");
