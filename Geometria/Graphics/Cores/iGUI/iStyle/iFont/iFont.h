@@ -12,6 +12,31 @@ struct iFont
 	static ImFont* defaultFont;
 	ImFont* font = nullptr;
 
+	float _alignment = 0.f;
+
+	enum WordWrap
+	{
+		None,
+		BreakSpace,
+		BreakRawSpace
+	};
+
+	WordWrap _ww = WordWrap::None;
+
+	WordWrap& Wrap()
+	{
+		return _ww;
+	}
+
+	float& Align()
+	{
+		return _alignment;
+	}
+
+	float AlignToLeft() { return 0.f; }
+	float AlignToCenter() { return 0.5f; }
+	float AlignToRight() { return 1.f; }
+
 	iFont()
 	{
 
