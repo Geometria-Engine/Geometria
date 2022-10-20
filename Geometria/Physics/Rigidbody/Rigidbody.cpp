@@ -15,10 +15,11 @@ void Rigidbody::OnUpdate()
 	{
 		if (boxC->boxDynamic != nullptr)
 		{
+			Vector3 offset = boxC->offset;
 			if (!forceChange)
 			{
 				physx::PxTransform t = boxC->boxDynamic->getGlobalPose();
-				physx::PxVec3 pos = t.p;
+				physx::PxVec3 pos = physx::PxVec3(t.p.x - offset.x, t.p.y - offset.y, t.p.z - offset.z);
 
 				if (freezePositionX)
 				{
@@ -40,6 +41,7 @@ void Rigidbody::OnUpdate()
 
 				GetTransform().position = Vector3(pos.x, pos.y, pos.z);
 				forcedTransform.position = GetTransform().position;
+				boxC->boxDynamic->setGlobalPose(physx::PxTransform(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z));
 			}
 			else
 			{

@@ -23,6 +23,7 @@ struct BoxCollider : public ScriptBehaviour
 	physx::PxShape* boxShape = nullptr;
 
 	Vector3 size = Vector3(1);
+	Vector3 offset = Vector3(0);
 
 	bool _isTrigger = false;
 
@@ -43,5 +44,6 @@ struct BoxCollider : public ScriptBehaviour
 	void OnDestroy();
 	void OnTransformChange(int value);
 	void SetScale(Vector3 size);
+	void SetOffset(Vector3 offset);
 	void SetTrigger(bool t);
 };

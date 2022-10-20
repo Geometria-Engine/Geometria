@@ -43,7 +43,7 @@ void BoxCollider::OnTransformChange(int value)
 		case 0:
 			if(boxStatic != nullptr)
 			{
-				boxStatic->setGlobalPose(physx::PxTransform(GetTransform().position.x, GetTransform().position.y, GetTransform().position.z));
+				boxStatic->setGlobalPose(physx::PxTransform(GetTransform().position.x + offset.x, GetTransform().position.y + offset.y, GetTransform().position.z + offset.z));
 			}
 			break;
 
@@ -139,6 +139,11 @@ void BoxCollider::SetScale(Vector3 size)
 
 		boxStatic->attachShape(*boxShape);
 	}
+}
+
+void BoxCollider::SetOffset(Vector3 offset)
+{
+	this->offset = offset;
 }
 
 void BoxCollider::SetTrigger(bool t)
