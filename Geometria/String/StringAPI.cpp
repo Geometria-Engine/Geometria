@@ -1,9 +1,15 @@
 #include "StringAPI.h"
 #include <sstream>
 #include <cstring>
+#include <iostream>
 
 std::string StringAPI::ReplaceAll(std::string str, const std::string& from, const std::string& to)
 {
+	//if(str.find(from) == std::string::npos)
+	//	return str;
+	//else if(str.find(to) == std::string::npos)
+	//	return str;
+
 	size_t start_pos = 0;
 	std::string modifyString = str;
 	while ((start_pos = modifyString.find(from, start_pos)) != std::string::npos)
@@ -21,6 +27,9 @@ std::string StringAPI::RemoveAll(std::string str, const std::string& del)
 
 std::string StringAPI::GetSubstringBetween(std::string text, std::string firstT, std::string lastT)
 {
+	if(text == "")
+		return std::string("");
+
 	unsigned first = text.find(firstT);
 	unsigned last = text.find(lastT);
 
@@ -30,8 +39,11 @@ std::string StringAPI::GetSubstringBetween(std::string text, std::string firstT,
 	if(firstT == "")
 		first = 0;
 
-	std::string level;
-	if (first != -1 && last != -1)
+	std::string level = "";
+	bool isNotLessThanMinusOne = first != -1 && last != -1;
+	bool isNotEqual = first != last;
+	bool isNotPushingLimit = first < 4294967295 && last < 4294967295;
+	if (isNotLessThanMinusOne && isNotPushingLimit)
 	{
 		level = text.substr(first, last - first);
 		level = ReplaceAll(level, firstT, "");

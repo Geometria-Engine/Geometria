@@ -272,3 +272,6 @@ Makefile
 # Backup Folders
 BackupGame/
 BackupFiles/
+
+# Python Cache
+__pycache__/
